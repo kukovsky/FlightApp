@@ -1,0 +1,26 @@
+package org.flightapp.api.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+import java.util.Set;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
+
+    @Setter
+    Integer userId;
+    String userName;
+    String firstName;
+    String lastName;
+    @Email
+    String email;
+    @Size(min = 6, message = "Password must be at least 6 characters long")
+    String password;
+    Set<ReservationsDTO> reservations;
+
+}
