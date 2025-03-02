@@ -6,25 +6,36 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Value
 @With
+@Value
 @Builder
-@EqualsAndHashCode(of = "reservationId")
-@ToString(of = {"reservationId", "origin", "destination", "departureDate", "returnDate", "airline", "price", "currency", "numberOfPassengers", "createdAt"})
+@EqualsAndHashCode(of = {"reservationId", "departureFlightNumber", "returnFlightNumber"})
+@ToString(of = {"reservationId", "departureOrigin", "departureDestination", "departureFlightNumber", "departureDate",
+        "returnDepartureDate", "returnAirline", "price", "currency", "numberOfPassengers", "createdAt", "status"})
 public class Reservations {
 
     Integer reservationId;
-    String origin;
-    String destination;
-    String flightNumber;
+    String departureOrigin;
+    String departureDestination;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime departureDate;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    LocalDateTime returnDate;
-    String airline;
+    LocalDateTime departureReturnDate;
+    String departureAirline;
+    String departureFlightNumber;
+    String returnOrigin;
+    String returnDestination;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    LocalDateTime returnDepartureDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    LocalDateTime returnReturnDate;
+    String returnAirline;
+    String returnFlightNumber;
+    Integer numberOfStops;
     BigDecimal price;
     String currency;
     Integer numberOfPassengers;
     LocalDateTime createdAt;
+    ReservationStatus status;
     User user;
 }

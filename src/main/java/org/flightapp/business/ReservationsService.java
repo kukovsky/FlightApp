@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flightapp.business.dao.ReservationsDAO;
 import org.flightapp.domain.Reservations;
+import org.flightapp.domain.User;
 import org.flightapp.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -18,18 +19,45 @@ import java.util.Optional;
 public class ReservationsService {
 
     private final ReservationsDAO reservationsDAO;
+    private final UserService userService;
 
 
     @Transactional
     public Reservations save(Reservations reservations) {
-        reservations = reservations.withCreatedAt(LocalDateTime.now());
-        return reservationsDAO.saveReservation(reservations);
+        reservations = buildReseravtion(reservations, reservations.getUser());
+        User existingUser = userService.findUserByUserName(reservations.getUser().getUserName());
+        Set<Reservations> existingReservations = existingUser.getReservations();
+        existingReservations.add(reservations);
+        userService.saveReservation(existingUser.withReservations(existingReservations));
+        return reservations;
+    }
 
+    private Reservations buildReseravtion(Reservations reservations, User user) {
+        return Reservations.builder()
+                .departureOrigin(reservations.getDepartureOrigin())
+                .departureDestination(reservations.getDepartureDestination())
+                .departureDate(reservations.getDepartureDate())
+                .departureReturnDate(reservations.getDepartureReturnDate())
+                .departureAirline(reservations.getDepartureAirline())
+                .departureFlightNumber(reservations.getDepartureFlightNumber())
+                .returnOrigin(reservations.getReturnOrigin())
+                .returnDestination(reservations.getReturnDestination())
+                .returnDepartureDate(reservations.getReturnDepartureDate())
+                .returnReturnDate(reservations.getReturnReturnDate())
+                .returnAirline(reservations.getReturnAirline())
+                .returnFlightNumber(reservations.getReturnFlightNumber())
+                .price(reservations.getPrice())
+                .currency(reservations.getCurrency())
+                .numberOfPassengers(reservations.getNumberOfPassengers())
+                .createdAt(LocalDateTime.now())
+                .status(reservations.getStatus())
+                .user(user)
+                .build();
     }
 
     @Transactional
-    public List<Reservations> findAllReservations(Integer userId) {
-        return reservationsDAO.findByUserId(userId);
+    public List<Reservations> findAllReservationsSorted(String userName) {
+        return reservationsDAO.findByUserNameOrderStatusAscDepartureDateDesc(userName);
     }
 
     @Transactional
@@ -39,11 +67,11 @@ public class ReservationsService {
 
     @Transactional
     public Reservations findReservationById(Integer reservationId) {
-        Optional<Reservations> reservations = reservationsDAO.findReservationById(reservationId);
-        if (reservations.isEmpty()) {
+        Reservations reservations = reservationsDAO.findReservationById(reservationId);
+        if (reservations == null) {
             throw new NotFoundException("Reservation not found");
         }
-        return reservations.get();
+        return reservations;
     }
 
 }

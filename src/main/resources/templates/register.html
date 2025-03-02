@@ -9,7 +9,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">FlightApp - Login and Registration</a>
+        <a class="navbar-brand" th:href="@{/index}">FlightApp - Logowanie i Rejestracja</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -17,7 +17,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Zaloguj się</a>
                 </li>
             </ul>
         </div>
@@ -28,45 +28,45 @@
     <div class="row col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Registration</h2>
+                <h2 class="text-center">Rejestracja</h2>
             </div>
             <div th:if="${param.success}">
                 <div class="alert alert-success">
-                    <p>User has been registered successfully!</p>
+                    <p>Użytkownik zarejestrowany pomyślnie!</p>
                 </div>
             </div>
             <div class="card-body">
                 <form method="post" role="form" th:action="@{/register/save}" th:object="${user}">
                     <div class="form-group mb-3">
-                        <label class="form-label">Username</label>
+                        <label class="form-label">Nazwa użytkownika</label>
                         <input type="text"
                                class="form-control"
                                id="userName"
                                name="userName"
                                th:field="*{userName}"
-                               placeholder="Enter username"
+                               placeholder="Podaj nazwę użytkownika"
                                required="required"/>
-                        <p th:errors="*{userName}" class="text-danger" th:if="${#fields.hasErrors('userName')}"></p>
+                        <p th:errors="*{userName}" class="text-danger" th:if="${#fields.hasErrors('userName')}">Nazwa użytkownika jest zajęta</p>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="form-label">First name</label>
+                        <label class="form-label">Imię</label>
                         <input type="text"
                                class="form-control"
                                id="firstName"
                                name="firstName"
                                th:field="*{firstName}"
-                               placeholder="Enter first name"
+                               placeholder="Podaj imię"
                                required="required"/>
                         <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="form-label">Last name</label>
+                        <label class="form-label">Nazwisko</label>
                         <input type="text"
                                class="form-control"
                                id="lastName"
                                name="lastName"
                                th:field="*{lastName}"
-                               placeholder="Enter last name"
+                               placeholder="Podaj nazwisko"
                                required="required"/>
                         <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
                     </div>
@@ -77,9 +77,9 @@
                                id="email"
                                name="email"
                                th:field="*{email}"
-                               placeholder="Enter email"
+                               placeholder="Podaj email"
                                required="required"/>
-                        <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}"></p>
+                        <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}">Adres e-mail jest już zajęty</p>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Password</label>
@@ -88,13 +88,13 @@
                                id="password"
                                name="password"
                                th:field="*{password}"
-                               placeholder="Enter password"
+                               placeholder="Podaj hasło"
                                required="required"/>
                         <p th:errors="*{password}" class="text-danger" th:if="${#fields.hasErrors('password')}"></p>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Register</button>
-                        <span>Already have an account? <a th:href="@{/login}">Login</a></span>
+                        <button type="submit" class="btn btn-primary">Zarejestruj się</button>
+                        <span>Masz już konto? <a th:href="@{/login}">Zaloguj się</a></span>
                     </div>
                 </form>
             </div>

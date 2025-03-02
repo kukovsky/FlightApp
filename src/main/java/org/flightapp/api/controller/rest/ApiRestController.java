@@ -28,10 +28,6 @@ public class ApiRestController {
         }
     }
 
-    @PostMapping("/confirm")
-    public FlightPrice confirmFlightPrice(@RequestBody FlightOfferSearch search) throws ResponseException {
-        return amadeusService.confirmFlightPrice(search);
-    }
 
 
 

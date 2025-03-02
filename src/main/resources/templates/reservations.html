@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class = "nav-link active" aria-current="page" th:href="@{/flights}">Wyszukiwarka lotów</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/flights}">Wyszukiwarka lotów</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/logout}">Wyloguj</a>
@@ -25,47 +25,80 @@
         </div>
     </div>
 </nav>
-<div class="container">
-    <div class="row col-md-10">
-        <h2>Twoje rezerwacje</h2>
+<div class="container d-flex justify-content-center" style="margin-top: 50px;">
+    <div>
+        <div th:if="${deleteMessage}" class="alert alert-success" role="alert">
+            <span th:text="${deleteMessage}">Rezerwacja usunięta pomyślnie!</span>
+        </div>
+        <div th:if="${payMessage}" class="alert alert-success" role="alert">
+            <span th:text="${payMessage}">Rezerwacja opłacona pomyślnie!</span>
+        </div>
+        <div class="row col-md-10">
+            <h2>Twoje rezerwacje</h2>
+        </div>
+        <table class="table table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th colspan="6" class="text-center">Dane wylotu</th>
+                <th colspan="6" class="text-center">Dane powrotu</th>
+                <th colspan="5" class="text-center">Szczegóły rezerwacji</th>
+            </tr>
+            <tr>
+                <th class="text-center">Numer lotu</th>
+                <th class="text-center">Miejsce wylotu</th>
+                <th class="text-center">Miejsce przylotu</th>
+                <th class="text-center">Data wylotu</th>
+                <th class="text-center">Data powrotu</th>
+                <th class="text-center">Linie lotnicze</th>
+                <th class="text-center">Numer lotu</th>
+                <th class="text-center">Miejsce wylotu</th>
+                <th class="text-center">Miejsce przylotu</th>
+                <th class="text-center">Data wylotu</th>
+                <th class="text-center">Data powrotu</th>
+                <th class="text-center">Linie lotnicze</th>
+                <th class="text-center">Liczba pasażerów</th>
+                <th class="text-center">Cena</th>
+                <th class="text-center">Waluta</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reservationDTO : ${allReservationsDTO}">
+                <!-- Wiersz dla lotu wylotowego -->
+                <td class="text-center" th:text="${reservationDTO.departureFlightNumber}"></td>
+                <td class="text-center" th:text="${reservationDTO.departureOrigin}"></td>
+                <td class="text-center" th:text="${reservationDTO.departureDestination}"></td>
+                <td class="text-center" th:text="${#temporals.format(reservationDTO.departureDate, 'dd.MM.yyyy HH:mm')}"></td>
+                <td class="text-center" th:text="${reservationDTO.returnFlightNumber != null ? #temporals.format(reservationDTO.returnDepartureDate, 'dd.MM.yyyy HH:mm') : ''}"></td>
+                <td class="text-center" th:text="${reservationDTO.departureAirline}"></td>
+                <td class="text-center" th:text="${reservationDTO.returnFlightNumber}"></td>
+                <td class="text-center" th:text="${reservationDTO.returnOrigin}"></td>
+                <td class="text-center" th:text="${reservationDTO.returnDestination}"></td>
+                <td class="text-center" th:text="${#temporals.format(reservationDTO.returnDepartureDate, 'dd.MM.yyyy HH:mm')}"></td>
+                <td class="text-center" th:text="${reservationDTO.returnReturnDate != null ? #temporals.format(reservationDTO.returnReturnDate, 'dd.MM.yyyy HH:mm') : ''}"></td>
+                <td class="text-center" th:text="${reservationDTO.returnAirline}"></td>
+                <td class="text-center" th:text="${reservationDTO.numberOfPassengers}"></td>
+                <td class="text-center" th:text="${reservationDTO.price}"></td>
+                <td class="text-center" th:text="${reservationDTO.currency}"></td>
+                <td class="text-center" th:text="${reservationDTO.status.getStatus()}"></td>
+                <td class="align-middle text-center">
+                    <div class="d-flex gap-2 align-items-stretch justify-content-center"
+                         th:if="${reservationDTO.status.name() == 'WAITING_FOR_PAYMENT'}">
+                        <form th:action="@{/reservations/pay/{reservationId}(reservationId=${reservation.reservationId})}"
+                              class="flex-grow-1" style="width: 100%;">
+                            <button type="submit" class="btn btn-success w-100 h-100">Zapłać</button>
+                        </form>
+                        <form class="flex-grow-1" style="width: 100%;">
+                            <button type="submit" class="btn btn-danger w-100 h-100">Usuń rezerwację</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>Numer lotu</th>
-            <th>Miejsce wylotu</th>
-            <th>Miejsce przylotu</th>
-            <th>Data wylotu</th>
-            <th>Data powrotu</th>
-            <th>Linie lotnicze</th>
-            <th>Liczba pasażerów</th>
-            <th>Cena</th>
-            <th>Waluta</th>
-            <th>Akcja</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each = "reservation : ${reservations}">
-            <td th:text = "${reservation.flightNumber}"></td>
-            <td th:text = "${reservation.origin}"></td>
-            <td th:text = "${reservation.destination}"></td>
-            <td th:text = "${reservation.departureDate}"></td>
-            <td th:text = "${reservation.returnDate}"></td>
-            <td th:text = "${reservation.airline}"></td>
-            <td th:text = "${reservation.numberOfPassengers}"></td>
-            <td th:text = "${reservation.price}"></td>
-            <td th:text = "${reservation.currency}"></td>
-            <td>
-                <form th:action="@{/reservations/delete/{reservationId}(reservationId=${reservation.reservationId})}" method="post">
-                    <button type="submit" class="btn btn-danger">Usuń rezerwację</button>
-                </form>
-            </td>
-
-
-        </tr>
-        </tbody>
-    </table>
 </div>
 </body>
 </html>
+

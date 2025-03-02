@@ -20,14 +20,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FlightAppUserDetailsService implements UserDetailsService {
-    
+
     private final UserJpaRepository userJpaRepository;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        FlightAppUsersEntity user = userJpaRepository.findByUserName(username)
-                .orElseThrow(() -> new NotFoundException("Could not find user: [%s]".formatted(username)));
+        FlightAppUsersEntity user = userJpaRepository.findByUserName(username);
+        if (user == null) {
+            throw new NotFoundException("User with username: [%s] not found".formatted(username));
+        }
         List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
         return buildUserForAuthentication(user, authorities);
     }

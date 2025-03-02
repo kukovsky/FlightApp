@@ -46,6 +46,7 @@
                 event.preventDefault();
                 searchFlights();
             });
+
         });
 
         // Funkcja do wyszukiwania lokalizacji
@@ -108,9 +109,14 @@
             const departureDate = document.getElementById("departureDate").value;
             const returnDate = document.getElementById("returnDate").value;
             const adults = document.getElementById("passengers").value;
+            const directFlight = document.getElementById("directFlight").checked;
+
+
 
             const url = `/flightapp/api/flights?origin=${origin}&destination=${destination}&departDate=${departureDate}&adults=${adults}` +
-                (returnDate ? `&returnDate=${returnDate}` : '');
+                (returnDate ? `&returnDate=${returnDate}` : '') +
+                (directFlight ? `&nonStop=true` : '');
+
 
             try {
                 const response = await fetch(url);
@@ -137,33 +143,29 @@
             }
 
             const table = document.createElement('table');
-            table.classList.add('table', 'table-bordered', 'text-center', 'align-middle'); // Centrowanie treści
+            table.classList.add('table', 'table-bordered', 'text-center', 'align-middle');
             const thead = document.createElement('thead');
             thead.innerHTML = `
-    <tr>
-        <th>Miejsce wylotu</th>
-        <th>Miejsce przylotu</th>
-        <th>Godzina wylotu</th>
-        <th>Godzina przylotu</th>
-        <th>Numer lotu</th>
-        <th>Linia lotnicza</th>
-        <th>Liczba przesiadek</th>
-        <th>Cena</th>
-        <th>Waluta</th>
-        <th>Akcja</th>
-    </tr>
+        <tr>
+            <th>Miejsce wylotu</th>
+            <th>Miejsce przylotu</th>
+            <th>Godzina wylotu</th>
+            <th>Godzina przylotu</th>
+            <th>Numer lotu</th>
+            <th>Linia lotnicza</th>
+            <th>Liczba przesiadek</th>
+            <th>Cena</th>
+            <th>Waluta</th>
+            <th>Akcja</th>
+        </tr>
     `;
             table.appendChild(thead);
 
             const tbody = document.createElement('tbody');
 
             flightOffers.forEach(offer => {
-                const outboundSegment = offer.itineraries[0].segments[0]; // Wylot
-                const inboundSegment = offer.itineraries[1]?.segments[0]; // Powrót (jeśli istnieje)
+                const numOfTransfers = offer.numberOfStops;
 
-                const numOfTransfers = offer.itineraries[0].segments.length - 1;
-
-                // Tworzenie przycisku rezerwacji (teraz poprawnie dodany!)
                 const reserveButton = document.createElement('button');
                 reserveButton.classList.add('btn', 'btn-primary');
                 reserveButton.textContent = 'Rezerwuj';
@@ -171,34 +173,37 @@
                     reserveFlight(offer);
                 };
 
-                // Wiersz dla lotu w jedną stronę
                 const rowOutbound = document.createElement('tr');
+                const outboundDepartureDate = new Date(offer.departureDate);
+                const outboundReturnDate = new Date(offer.departureReturnDate);
+
                 rowOutbound.innerHTML = `
-            <td>${outboundSegment.departure.iataCode}</td>
-            <td>${outboundSegment.arrival.iataCode}</td>
-            <td>${new Date(outboundSegment.departure.at).toLocaleString()}</td>
-            <td>${new Date(outboundSegment.arrival.at).toLocaleString()}</td>
-            <td>${outboundSegment.number}</td>
-            <td>${outboundSegment.carrierCode || 'N/A'}</td>
+            <td>${offer.departureOrigin}</td>
+            <td>${offer.departureDestination}</td>
+            <td>${outboundDepartureDate.toLocaleString()}</td>
+            <td>${outboundReturnDate.toLocaleString()}</td>
+            <td>${offer.departureFlightNumber}</td>
+            <td>${offer.departureAirline || 'N/A'}</td>
             <td rowspan="2">${numOfTransfers}</td>
-            <td rowspan="2">${offer.price.total}</td>
-            <td rowspan="2">${offer.price.currency}</td>
+            <td rowspan="2">${offer.price}</td>
+            <td rowspan="2">${offer.currency}</td>
         `;
 
-                // Wiersz dla lotu powrotnego (jeśli istnieje)
                 const rowInbound = document.createElement('tr');
-                if (inboundSegment) {
+                if (offer.returnOrigin) {
+                    const inboundDepartureDate = new Date(offer.returnDepartureDate);
+                    const inboundReturnDate = new Date(offer.returnReturnDate);
+
                     rowInbound.innerHTML = `
-                <td>${inboundSegment.departure.iataCode}</td>
-                <td>${inboundSegment.arrival.iataCode}</td>
-                <td>${new Date(inboundSegment.departure.at).toLocaleString()}</td>
-                <td>${new Date(inboundSegment.arrival.at).toLocaleString()}</td>
-                <td>${inboundSegment.number}</td>
-                <td>${inboundSegment.carrierCode || 'N/A'}</td>
+                <td>${offer.returnOrigin}</td>
+                <td>${offer.returnDestination}</td>
+                <td>${inboundDepartureDate.toLocaleString()}</td>
+                <td>${inboundReturnDate.toLocaleString()}</td>
+                <td>${offer.returnFlightNumber}</td>
+                <td>${offer.returnAirline || 'N/A'}</td>
             `;
                 }
 
-                // Dodanie przycisku do odpowiedniej komórki
                 const actionCell = document.createElement('td');
                 actionCell.setAttribute('rowspan', '2');
                 actionCell.classList.add('align-middle');
@@ -207,7 +212,7 @@
 
                 tbody.appendChild(rowOutbound);
                 if (rowInbound.innerHTML) {
-                    tbody.appendChild(rowInbound); // Dodaj tylko jeśli istnieje lot powrotny
+                    tbody.appendChild(rowInbound);
                 }
             });
 
@@ -215,7 +220,9 @@
             resultsDiv.appendChild(table);
         }
 
+
         var userName = '${user.userName}';
+
         // Funkcja rezerwacji lotu
         function reserveFlight(offer) {
             console.log('Obiekt offer:', offer); // Sprawdzamy dane lotu
@@ -224,42 +231,45 @@
                 return;
             }
 
-            // Pobranie segmentów lotów
-            const outboundSegment = offer.itineraries[0].segments[0]; // Wylot
-            const inboundSegment = offer.itineraries[1]?.segments[0]; // Powrót (opcjonalny)
-
+            // Pobranie liczby pasażerów
             const adults = document.getElementById("passengers").value;
-
-            console.log('Outbound segment:', outboundSegment); // Sprawdzamy dane segmentu wylotu
-            console.log('Inbound segment:', inboundSegment); // Sprawdzamy dane segmentu powrotnego
 
             // Tworzenie obiektu rezerwacji
             const reservation = {
                 userName: userName,
-                flightNumber: outboundSegment.number,
-                origin: outboundSegment.departure.iataCode,
-                destination: outboundSegment.arrival.iataCode,
-                departureDate: outboundSegment.departure.at,
-                airline: outboundSegment.carrierCode,
-                numberOfPassengers: adults,
-                price: offer.price.total,
-                currency: offer.price.currency
+                departureOrigin: offer.departureOrigin, // Miejsce wylotu
+                departureDestination: offer.departureDestination, // Miejsce przylotu
+                departureDate: offer.departureDate, // Data wylotu
+                departureReturnDate: offer.departureReturnDate, // Data przylotu
+                departureAirline: offer.departureAirline, // Linia lotnicza wylotu
+                departureFlightNumber: offer.departureFlightNumber, // Numer lotu wylotowego
+                returnOrigin: offer.returnOrigin, // Miejsce wylotu powrotnego
+                returnDestination: offer.returnDestination, // Miejsce przylotu powrotnego
+                returnDepartureDate: offer.returnDepartureDate, // Data wylotu powrotnego
+                returnReturnDate: offer.returnReturnDate, // Data przylotu powrotnego
+                returnAirline: offer.returnAirline, // Linia lotnicza powrotna
+                returnFlightNumber: offer.returnFlightNumber, // Numer lotu powrotnego
+                numberOfStops: offer.numberOfStops, // Liczba przesiadek
+                numberOfPassengers: adults, // Liczba pasażerów
+                price: offer.price, // Cena lotu
+                currency: offer.currency // Waluta
             };
 
             console.log('Obiekt reservation przed wysłaniem:', reservation); // Sprawdzamy dane rezerwacji przed wysłaniem
 
             // Jeśli istnieje lot powrotny, dodajemy go do rezerwacji
-            if (inboundSegment) {
+            if (offer.returnFlightNumber) {
                 reservation.returnFlight = {
-                    flightNumber: inboundSegment.number,
-                    origin: inboundSegment.departure.iataCode,
-                    destination: inboundSegment.arrival.iataCode,
-                    departureDate: inboundSegment.departure.at,
-                    airline: inboundSegment.carrierCode
+                    returnOrigin: offer.returnOrigin, // Miejsce wylotu powrotnego
+                    returnDestination: offer.returnDestination, // Miejsce przylotu powrotnego
+                    returnDepartureDate: offer.returnDepartureDate, // Data wylotu powrotnego
+                    returnReturnDate: offer.returnReturnDate, // Data przylotu powrotnego
+                    returnAirline: offer.returnAirline, // Linia lotnicza powrotnego
+                    returnFlightNumber: offer.returnFlightNumber // Numer lotu powrotnego
                 };
 
                 // Dodajemy returnDate, jeśli istnieje lot powrotny
-                reservation.returnDate = inboundSegment.departure.at;
+                reservation.returnDate = offer.returnDepartureDate;
             }
 
             console.log('Obiekt reservation po dodaniu lotu powrotnego:', reservation); // Sprawdzamy dane rezerwacji po dodaniu lotu powrotnego
@@ -340,6 +350,10 @@
             <label for="passengers" class="form-label">Liczba pasażerów:</label>
             <input type="number" id="passengers" name="numberOfPassengers" class="form-control" min="1" max="9"
                    value="1" required>
+        </div>
+        <div class="mb-3">
+            <label for="directFlight" class="form-label">Lot bez przesiadek:</label>
+            <input type="checkbox" id="directFlight" name="directFlight" class="form-check-input">
         </div>
 
         <button type="submit" class="btn btn-primary">Szukaj rezerwacji</button>

@@ -52,7 +52,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/flights").hasAnyAuthority("ROLE_ADMIN")
                                 .requestMatchers("/api/**").authenticated()
                                 .requestMatchers("/reservations/**").authenticated()
-                ).formLogin(
+                )
+                .formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")

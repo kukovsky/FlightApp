@@ -2,6 +2,8 @@ server:
   port: 8080
   servlet:
     context-path: /flightapp
+    session:
+      timeout: 15m
 amadeus:
   api:
     key: EP4hJKUuuui7lU4HcP2om1e1I98h2ACB
@@ -29,3 +31,8 @@ spring:
         enabled: true
     converters:
       preferred-json-mapper: gson
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG

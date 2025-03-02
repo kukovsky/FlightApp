@@ -8,9 +8,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = "userId")
-@ToString(of = {"userId", "firstName", "lastName", "email", "createdAt"})
-@Builder
+@EqualsAndHashCode(of = {"userId"})
+@ToString(of = {"userId", "userName", "firstName", "lastName", "email", "password" ,"active", "createdAt"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -43,15 +42,14 @@ public class FlightAppUsersEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<ReservationsEntity> reservations;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "flightapp_user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<FlightAppRoles> roles;
-
 }

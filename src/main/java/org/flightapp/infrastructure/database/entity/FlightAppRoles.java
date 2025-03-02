@@ -17,7 +17,7 @@ public class FlightAppRoles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private int roleId;
+    private Integer roleId;
 
     @Column(name = "role")
     private String role;
