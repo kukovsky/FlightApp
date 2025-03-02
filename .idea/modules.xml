@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FlightApp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FlightApp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FlightApp.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FlightApp.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/inzynierka.iml" filepath="$PROJECT_DIR$/.idea/inzynierka.iml" />
     </modules>
   </component>
