@@ -13,5 +13,9 @@ public interface ReservationsMapper {
 
     @Mapping(target = "reservationId", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "user.userId", ignore = true)
+    @Mapping(target = "user.createdAt", ignore = true)
+    @Mapping(target = "user.active", ignore = true)
+    @Mapping(target = "user.roles", ignore = true)
     Reservations map(ReservationsDTO reservationsDTO);
 }

@@ -287,11 +287,11 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Odpowiedź z backendu:', data); // Sprawdzamy odpowiedź z backendu
-                    alert('Rezerwacja zapisana!');
+                    alert(data.message);
                 })
                 .catch(error => {
                     console.error('Błąd podczas rezerwacji lotu:', error);
-                    alert('Błąd podczas rezerwacji lotu.');
+                    alert(error.message);
                 });
         }
 

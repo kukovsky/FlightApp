@@ -32,7 +32,6 @@ public class ReservationController {
     public String reservations(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName();
-        User user = userService.findUserByUserName(userName);
         var allReservations = reservationsService.findAllReservationsSorted(userName).stream()
                 .map(reservationsMapper::map).toList();
         model.addAttribute("allReservationsDTO", allReservations);
@@ -40,16 +39,11 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations/pay/{reservationId}")
-    public String payReservation(@PathVariable Integer reservationId, RedirectAttributes redirectAttributes) throws AccessDeniedException {
+    public String payReservation(@PathVariable Integer reservationId ,RedirectAttributes redirectAttributes) throws AccessDeniedException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName();
-        User user = userService.findUserByUserName(userName);
-        Reservations reservation = reservationsService.findReservationById(reservationId);
-        ReservationsDTO reservationsDTO = reservationsMapper.map(reservation);
-        reservationsDTO.setUser(usersMapper.map(user));
-        reservationsDTO.setStatus(ReservationStatus.PAID);
-        Reservations reservations = reservationsMapper.map(reservationsDTO);
-        reservationsService.save(reservations);
+        Reservations paidReservation = reservationsService.payReservation(reservationId, userName);
+        reservationsMapper.map(paidReservation);
         redirectAttributes.addFlashAttribute("payMessage", "Rezerwacja opłacona pomyślnie");
         return "redirect:/reservations";
     }

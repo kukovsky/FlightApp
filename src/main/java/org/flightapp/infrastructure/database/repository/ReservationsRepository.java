@@ -38,7 +38,6 @@ public class ReservationsRepository implements ReservationsDAO {
     @Override
     public Reservations saveReservation(Reservations reservations) {
         ReservationsEntity toSave = sourceTargetMapper.toEntity(reservations, jpaCtx);
-        System.out.println("reservation to save:" + reservations);
         ReservationsEntity savedEntity = reservationsJpaRepository.save(toSave);
         return sourceTargetMapper.fromEntity(savedEntity, jpaCtx);
     }

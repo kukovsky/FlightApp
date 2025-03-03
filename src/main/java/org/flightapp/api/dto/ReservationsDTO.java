@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReservationsDTO {
 
+    private Integer reservationId;
     private String departureOrigin;
     private String departureDestination;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

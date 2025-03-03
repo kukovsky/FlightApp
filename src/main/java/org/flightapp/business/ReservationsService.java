@@ -3,14 +3,20 @@ package org.flightapp.business;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.flightapp.api.dto.ReservationsDTO;
+import org.flightapp.api.dto.mapper.ReservationsMapper;
+import org.flightapp.api.dto.mapper.UsersMapper;
 import org.flightapp.business.dao.ReservationsDAO;
+import org.flightapp.domain.ReservationStatus;
 import org.flightapp.domain.Reservations;
 import org.flightapp.domain.User;
 import org.flightapp.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -20,39 +26,28 @@ public class ReservationsService {
 
     private final ReservationsDAO reservationsDAO;
     private final UserService userService;
+    private final ReservationsMapper reservationsMapper;
+    private final UsersMapper usersMapper;
 
 
     @Transactional
-    public Reservations save(Reservations reservations) {
-        reservations = buildReseravtion(reservations, reservations.getUser());
-        User existingUser = userService.findUserByUserName(reservations.getUser().getUserName());
+    public Reservations createReservation(String userName, Reservations reservations) {
+        User existingUser = userService.findUserByUserName(userName);
+        Reservations reservationToSave = reservations.withStatus(ReservationStatus.WAITING_FOR_PAYMENT)
+                .withUser(existingUser)
+                .withCreatedAt(LocalDateTime.now());
         Set<Reservations> existingReservations = existingUser.getReservations();
-        existingReservations.add(reservations);
+        existingReservations.add(reservationToSave);
         userService.saveReservation(existingUser.withReservations(existingReservations));
-        return reservations;
+        System.out.println("Reservation saved: " + reservationToSave);
+        return reservationToSave;
     }
 
-    private Reservations buildReseravtion(Reservations reservations, User user) {
-        return Reservations.builder()
-                .departureOrigin(reservations.getDepartureOrigin())
-                .departureDestination(reservations.getDepartureDestination())
-                .departureDate(reservations.getDepartureDate())
-                .departureReturnDate(reservations.getDepartureReturnDate())
-                .departureAirline(reservations.getDepartureAirline())
-                .departureFlightNumber(reservations.getDepartureFlightNumber())
-                .returnOrigin(reservations.getReturnOrigin())
-                .returnDestination(reservations.getReturnDestination())
-                .returnDepartureDate(reservations.getReturnDepartureDate())
-                .returnReturnDate(reservations.getReturnReturnDate())
-                .returnAirline(reservations.getReturnAirline())
-                .returnFlightNumber(reservations.getReturnFlightNumber())
-                .price(reservations.getPrice())
-                .currency(reservations.getCurrency())
-                .numberOfPassengers(reservations.getNumberOfPassengers())
-                .createdAt(LocalDateTime.now())
-                .status(reservations.getStatus())
-                .user(user)
-                .build();
+    @Transactional
+    public Reservations payReservation(Integer reservationId, String userName) throws AccessDeniedException {
+        Reservations reservation = findReservationById(reservationId);
+
+//        return reservationsDAO.saveReservation(reservationToSave);
     }
 
     @Transactional
@@ -73,5 +68,4 @@ public class ReservationsService {
         }
         return reservations;
     }
-
 }
