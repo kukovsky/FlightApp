@@ -3,11 +3,10 @@ package org.flightapp.business;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flightapp.api.dto.UserDTO;
 import org.flightapp.api.dto.mapper.UsersMapper;
 import org.flightapp.business.dao.UserDAO;
 import org.flightapp.domain.User;
-import org.flightapp.infrastructure.database.entity.FlightAppRoles;
+import org.flightapp.infrastructure.database.entity.UserRoles;
 import org.flightapp.infrastructure.database.repository.jpa.RoleJpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
-        FlightAppRoles role = roleJpaRepository.findByRole("ROLE_ADMIN");
+        UserRoles role = roleJpaRepository.findByRole("ROLE_ADMIN");
         if (role == null) {
             role = checkRoleExist();
         }
@@ -66,8 +65,8 @@ public class UserService {
     }
 
 
-    private FlightAppRoles checkRoleExist() {
-        FlightAppRoles role = new FlightAppRoles();
+    private UserRoles checkRoleExist() {
+        UserRoles role = new UserRoles();
         role.setRole("ROLE_ADMIN");
         return roleJpaRepository.save(role);
     }

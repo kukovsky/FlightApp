@@ -2,7 +2,7 @@ package org.flightapp.domain;
 
 
 import lombok.*;
-import org.flightapp.infrastructure.database.entity.FlightAppRoles;
+import org.flightapp.infrastructure.database.entity.UserRoles;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import java.util.Set;
 @Value
 @Builder
 @EqualsAndHashCode(of = {"userName", "email"})
-@ToString(of = {"userId", "userName", "firstName", "lastName", "email", "password" ,"active", "createdAt"})
+@ToString(exclude = {"password", "roles", "reservations"})
 public class User {
 
     Integer userId;
@@ -24,7 +24,7 @@ public class User {
     String password;
     LocalDateTime createdAt;
     Boolean active;
-    Set<FlightAppRoles> roles;
+    Set<UserRoles> roles;
     Set<Reservations> reservations;
 
     public Set<Reservations> getReservations() {

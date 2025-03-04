@@ -2,23 +2,31 @@ package org.flightapp.infrastructure.database.repository.mapper;
 
 import org.flightapp.domain.Reservations;
 import org.flightapp.domain.User;
-import org.flightapp.infrastructure.database.entity.FlightAppUsersEntity;
+import org.flightapp.infrastructure.database.entity.UsersEntity;
 import org.flightapp.infrastructure.database.entity.ReservationsEntity;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Named;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface SourceTargetMapper {
 
-    FlightAppUsersEntity toEntity(User s, @Context JpaContext ctx);
+    UsersEntity toEntity(User s);
 
     @Mapping(target = "user", ignore = true)
-    ReservationsEntity toEntity(Reservations s, @Context JpaContext ctx);
+    ReservationsEntity toEntity(Reservations s);
 
-    User fromEntity(FlightAppUsersEntity s, @Context JpaContext ctx);
+    @Mapping(source = "reservations", target = "reservations", qualifiedByName = "mapReservations")
+    User fromEntity(UsersEntity s);
+
+    @Named("mapReservations")
+    default Set<Reservations> mapInvoices(Set<ReservationsEntity> invoiceEntities) {
+        return invoiceEntities.stream().map(this::fromEntity).collect(Collectors.toSet());
+    }
 
     @Mapping(target = "user", ignore = true)
-    Reservations fromEntity(ReservationsEntity s, @Context JpaContext ctx);
+    Reservations fromEntity(ReservationsEntity s);
 }

@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 @Value
 @Builder
 @EqualsAndHashCode(of = {"reservationId", "departureFlightNumber", "returnFlightNumber"})
-@ToString(of = {"reservationId", "departureOrigin", "departureDestination", "departureFlightNumber", "departureDate",
-        "returnDepartureDate", "returnAirline", "price", "currency", "numberOfPassengers", "createdAt", "status"})
+@ToString()
 public class Reservations {
 
     Integer reservationId;

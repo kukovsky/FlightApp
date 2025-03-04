@@ -10,10 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"reservationId"})
-@ToString(of = {"reservationId", "departureOrigin", "departureDestination", "departureDate",
-        "departureReturnDate", "departureAirline", "departureFlightNumber",
-        "returnOrigin", "returnDestination", "returnDepartureDate", "returnReturnDate",
-        "returnAirline", "returnFlightNumber", "price", "currency", "numberOfPassengers", "status", "createdAt"})
+@ToString(exclude = {"user"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -80,7 +77,7 @@ public class ReservationsEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private FlightAppUsersEntity user;
+    private UsersEntity user;
 }

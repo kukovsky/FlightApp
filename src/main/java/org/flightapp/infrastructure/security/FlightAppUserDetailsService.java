@@ -2,8 +2,8 @@ package org.flightapp.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
 import org.flightapp.domain.exception.NotFoundException;
-import org.flightapp.infrastructure.database.entity.FlightAppRoles;
-import org.flightapp.infrastructure.database.entity.FlightAppUsersEntity;
+import org.flightapp.infrastructure.database.entity.UserRoles;
+import org.flightapp.infrastructure.database.entity.UsersEntity;
 import org.flightapp.infrastructure.database.repository.jpa.UserJpaRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,7 +26,7 @@ public class FlightAppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        FlightAppUsersEntity user = userJpaRepository.findByUserName(username);
+        UsersEntity user = userJpaRepository.findByUserName(username);
         if (user == null) {
             throw new NotFoundException("User with username: [%s] not found".formatted(username));
         }
@@ -34,14 +34,14 @@ public class FlightAppUserDetailsService implements UserDetailsService {
         return buildUserForAuthentication(user, authorities);
     }
 
-    private List<GrantedAuthority> getUserAuthority(Set<FlightAppRoles> userRoles) {
+    private List<GrantedAuthority> getUserAuthority(Set<UserRoles> userRoles) {
         return userRoles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRole()))
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    private UserDetails buildUserForAuthentication(FlightAppUsersEntity user, List<GrantedAuthority> authorities) {
+    private UserDetails buildUserForAuthentication(UsersEntity user, List<GrantedAuthority> authorities) {
         return new User(
                 user.getUserName(),
                 user.getPassword(),

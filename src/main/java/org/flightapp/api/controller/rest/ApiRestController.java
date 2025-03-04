@@ -2,13 +2,14 @@ package org.flightapp.api.controller.rest;
 
 
 import com.amadeus.exceptions.ResponseException;
-import com.amadeus.resources.FlightOfferSearch;
-import com.amadeus.resources.FlightPrice;
 import com.amadeus.resources.Location;
 import lombok.AllArgsConstructor;
 import org.flightapp.business.AmadeusService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor

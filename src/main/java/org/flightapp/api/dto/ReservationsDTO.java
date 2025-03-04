@@ -38,6 +38,4 @@ public class ReservationsDTO {
     private Integer numberOfPassengers;
     private Integer numberOfStops;
     private ReservationStatus status;
-    private UserDTO user;
-
 }

@@ -3,10 +3,9 @@ package org.flightapp.infrastructure.database.repository;
 import lombok.AllArgsConstructor;
 import org.flightapp.business.dao.UserDAO;
 import org.flightapp.domain.User;
-import org.flightapp.infrastructure.database.entity.FlightAppUsersEntity;
+import org.flightapp.infrastructure.database.entity.UsersEntity;
 import org.flightapp.infrastructure.database.repository.jpa.ReservationsJpaRepository;
 import org.flightapp.infrastructure.database.repository.jpa.UserJpaRepository;
-import org.flightapp.infrastructure.database.repository.mapper.JpaContext;
 import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMapper;
 import org.springframework.stereotype.Repository;
 
@@ -20,17 +19,15 @@ public class UserRepository implements UserDAO {
     private final SourceTargetMapper sourceTargetMapper;
     private final ReservationsJpaRepository reservationsJpaRepository;
 
-    JpaContext jpaCtx = new JpaContext(null);
-
 
     @Override
     public void saveReservation(User user) {
-        FlightAppUsersEntity userToSave = sourceTargetMapper.toEntity(user, jpaCtx);
-        FlightAppUsersEntity userSaved = userJpaRepository.saveAndFlush(userToSave);
+        UsersEntity userToSave = sourceTargetMapper.toEntity(user);
+        UsersEntity userSaved = userJpaRepository.saveAndFlush(userToSave);
 
         user.getReservations().stream()
                 .filter(reservation -> Objects.isNull(reservation.getReservationId()))
-                .map(reservation -> sourceTargetMapper.toEntity(reservation, jpaCtx))
+                .map(sourceTargetMapper::toEntity)
                 .forEach(reservationsEntity -> {
                     reservationsEntity.setUser(userSaved);
                     reservationsJpaRepository.saveAndFlush(reservationsEntity);
@@ -39,22 +36,22 @@ public class UserRepository implements UserDAO {
 
     @Override
     public User saveUser(User user) {
-        FlightAppUsersEntity userToSave = sourceTargetMapper.toEntity(user, jpaCtx);
-        FlightAppUsersEntity savedUser = userJpaRepository.save(userToSave);
-        return sourceTargetMapper.fromEntity(savedUser, jpaCtx);
+        UsersEntity userToSave = sourceTargetMapper.toEntity(user);
+        UsersEntity savedUser = userJpaRepository.save(userToSave);
+        return sourceTargetMapper.fromEntity(savedUser);
     }
 
 
     @Override
     public User findByEmail(String email) {
-        FlightAppUsersEntity userEntity = userJpaRepository.findByEmail(email);
-        return sourceTargetMapper.fromEntity(userEntity, jpaCtx);
+        UsersEntity userEntity = userJpaRepository.findByEmail(email);
+        return sourceTargetMapper.fromEntity(userEntity);
     }
 
     @Override
     public User findByUserName(String userName) {
-        FlightAppUsersEntity usersEntity = userJpaRepository.findByUserName(userName);
-        return sourceTargetMapper.fromEntity(usersEntity, jpaCtx);
+        UsersEntity usersEntity = userJpaRepository.findByUserName(userName);
+        return sourceTargetMapper.fromEntity(usersEntity);
     }
 
 }

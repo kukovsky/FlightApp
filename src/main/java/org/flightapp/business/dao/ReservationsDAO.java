@@ -10,6 +10,5 @@ public interface ReservationsDAO {
     List<Reservations> findByUserNameOrderStatusAscDepartureDateDesc(String userName);
     Reservations saveReservation(Reservations reservations);
     void deleteReservation(Integer reservationId);
-    void deleteAll();
 
 }

@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ReservationStatus {
     WAITING_FOR_PAYMENT("Oczekuje na płatność"),
-    PAID("Opłacone");
+    PAID("Opłacona"),
+    CANCELLED("Anulowana");
 
     private final String status;
 

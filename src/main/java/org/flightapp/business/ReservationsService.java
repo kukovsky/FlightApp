@@ -3,14 +3,13 @@ package org.flightapp.business;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flightapp.api.dto.ReservationsDTO;
-import org.flightapp.api.dto.mapper.ReservationsMapper;
-import org.flightapp.api.dto.mapper.UsersMapper;
 import org.flightapp.business.dao.ReservationsDAO;
 import org.flightapp.domain.ReservationStatus;
 import org.flightapp.domain.Reservations;
 import org.flightapp.domain.User;
 import org.flightapp.domain.exception.NotFoundException;
+import org.springframework.boot.actuate.endpoint.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
@@ -26,11 +25,8 @@ public class ReservationsService {
 
     private final ReservationsDAO reservationsDAO;
     private final UserService userService;
-    private final ReservationsMapper reservationsMapper;
-    private final UsersMapper usersMapper;
 
 
-    @Transactional
     public Reservations createReservation(String userName, Reservations reservations) {
         User existingUser = userService.findUserByUserName(userName);
         Reservations reservationToSave = reservations.withStatus(ReservationStatus.WAITING_FOR_PAYMENT)
@@ -39,15 +35,22 @@ public class ReservationsService {
         Set<Reservations> existingReservations = existingUser.getReservations();
         existingReservations.add(reservationToSave);
         userService.saveReservation(existingUser.withReservations(existingReservations));
-        System.out.println("Reservation saved: " + reservationToSave);
         return reservationToSave;
     }
 
     @Transactional
-    public Reservations payReservation(Integer reservationId, String userName) throws AccessDeniedException {
-        Reservations reservation = findReservationById(reservationId);
-
-//        return reservationsDAO.saveReservation(reservationToSave);
+    public Reservations payReservation(Integer reservationId) throws AccessDeniedException {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findUserByUserName(userName);
+        Optional<Reservations> updatedUserReservation = user.getReservations().stream()
+                .filter(reservation -> reservation.getReservationId().equals(reservationId))
+                .map(reservation -> reservation.withStatus(ReservationStatus.PAID))
+                .findFirst();
+        System.out.println("Updated user reservation: " + updatedUserReservation);
+        if(!updatedUserReservation.get().getUser().getUserName().equals(userName)) {
+            throw new AccessDeniedException("User is not allowed to pay for this reservation");
+        }
+        return reservationsDAO.saveReservation(updatedUserReservation.get());
     }
 
     @Transactional
@@ -66,6 +69,7 @@ public class ReservationsService {
         if (reservations == null) {
             throw new NotFoundException("Reservation not found");
         }
+        System.out.println("Reservation found: " + reservations);
         return reservations;
     }
 }

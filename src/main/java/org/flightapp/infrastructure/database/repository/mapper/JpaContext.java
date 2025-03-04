@@ -2,7 +2,7 @@ package org.flightapp.infrastructure.database.repository.mapper;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.flightapp.infrastructure.database.entity.FlightAppUsersEntity;
+import org.flightapp.infrastructure.database.entity.UsersEntity;
 import org.flightapp.infrastructure.database.entity.ReservationsEntity;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeforeMapping;
@@ -15,16 +15,16 @@ public class JpaContext {
 
     private final EntityManager em;
 
-    private FlightAppUsersEntity flightAppUsersEntity;
+    private UsersEntity usersEntity;
 
     @BeforeMapping
-    public void setEntity(@MappingTarget FlightAppUsersEntity usersEntity) {
-        this.flightAppUsersEntity = usersEntity;
+    public void setEntity(@MappingTarget UsersEntity usersEntity) {
+        this.usersEntity = usersEntity;
     }
 
     @AfterMapping
     public void establishRelation(@MappingTarget ReservationsEntity reservationsEntity) {
-         reservationsEntity.setUser(flightAppUsersEntity);
+         reservationsEntity.setUser(usersEntity);
         }
     }
 

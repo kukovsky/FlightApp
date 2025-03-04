@@ -4,7 +4,6 @@ import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.referencedata.Locations;
-import com.amadeus.resources.DatedFlight;
 import com.amadeus.resources.FlightOfferSearch;
 import com.amadeus.resources.Location;
 import lombok.AllArgsConstructor;

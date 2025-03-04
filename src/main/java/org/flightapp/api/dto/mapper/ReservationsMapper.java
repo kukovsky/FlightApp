@@ -2,7 +2,6 @@ package org.flightapp.api.dto.mapper;
 
 import org.flightapp.api.dto.ReservationsDTO;
 import org.flightapp.domain.Reservations;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

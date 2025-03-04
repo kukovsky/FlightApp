@@ -5,7 +5,6 @@ import org.flightapp.business.dao.ReservationsDAO;
 import org.flightapp.domain.Reservations;
 import org.flightapp.infrastructure.database.entity.ReservationsEntity;
 import org.flightapp.infrastructure.database.repository.jpa.ReservationsJpaRepository;
-import org.flightapp.infrastructure.database.repository.mapper.JpaContext;
 import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMapper;
 import org.springframework.stereotype.Repository;
 
@@ -18,28 +17,26 @@ public class ReservationsRepository implements ReservationsDAO {
     private final ReservationsJpaRepository reservationsJpaRepository;
     private final SourceTargetMapper sourceTargetMapper;
 
-    JpaContext jpaCtx = new JpaContext(null);
-
     @Override
     public Reservations findReservationById(Integer reservationId) {
-        ReservationsEntity reservationsEntity = reservationsJpaRepository.findByReservationId(reservationId);
-        return sourceTargetMapper.fromEntity(reservationsEntity, jpaCtx);
+        ReservationsEntity reservationsEntity = reservationsJpaRepository.findByReservationIdWithUser(reservationId);
+        return sourceTargetMapper.fromEntity(reservationsEntity);
 
     }
 
     @Override
     public List<Reservations> findByUserNameOrderStatusAscDepartureDateDesc(String userName) {
         return reservationsJpaRepository.findByUserUserNameOrderByStatusAscDepartureDateAsc(userName).stream()
-                .map((ReservationsEntity entity) -> sourceTargetMapper.fromEntity(entity, jpaCtx))
+                .map((ReservationsEntity entity) -> sourceTargetMapper.fromEntity(entity))
                 .toList();
     }
 
 
     @Override
     public Reservations saveReservation(Reservations reservations) {
-        ReservationsEntity toSave = sourceTargetMapper.toEntity(reservations, jpaCtx);
+        ReservationsEntity toSave = sourceTargetMapper.toEntity(reservations);
         ReservationsEntity savedEntity = reservationsJpaRepository.save(toSave);
-        return sourceTargetMapper.fromEntity(savedEntity, jpaCtx);
+        return sourceTargetMapper.fromEntity(savedEntity);
     }
 
     @Override
@@ -47,10 +44,6 @@ public class ReservationsRepository implements ReservationsDAO {
         reservationsJpaRepository.deleteByReservationId(reservationId);
     }
 
-    @Override
-    public void deleteAll() {
-        reservationsJpaRepository.deleteAll();
-    }
 
 
 }

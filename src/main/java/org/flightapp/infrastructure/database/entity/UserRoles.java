@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "flightapp_roles")
-public class FlightAppRoles {
+public class UserRoles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

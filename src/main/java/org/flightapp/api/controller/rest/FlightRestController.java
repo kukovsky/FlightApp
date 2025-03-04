@@ -1,7 +1,6 @@
 package org.flightapp.api.controller.rest;
 
 import com.amadeus.exceptions.ResponseException;
-import com.amadeus.resources.FlightOfferSearch;
 import lombok.AllArgsConstructor;
 import org.flightapp.api.dto.ReservationsDTO;
 import org.flightapp.business.AmadeusService;

@@ -9,12 +9,12 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"userId"})
-@ToString(of = {"userId", "userName", "firstName", "lastName", "email", "password" ,"active", "createdAt"})
+@ToString(exclude = {"reservations", "roles"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "flightapp_users")
-public class FlightAppUsersEntity {
+public class UsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class FlightAppUsersEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<ReservationsEntity> reservations;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -51,5 +51,5 @@ public class FlightAppUsersEntity {
             joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<FlightAppRoles> roles;
+    private Set<UserRoles> roles;
 }
