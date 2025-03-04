@@ -85,11 +85,11 @@
                 <td class="align-middle text-center">
                     <div class="d-flex gap-2 align-items-stretch justify-content-center"
                          th:if="${reservationDTO.status.name() == 'WAITING_FOR_PAYMENT'}">
-                        <form th:action="@{/reservations/pay/{reservationId}(reservationId=${reservationDTO.reservationId})}" method="post"
+                        <form th:action="@{/reservations/pay/{reservationId}(reservationId=${reservationDTO.reservationNumber})}" method="post"
                               class="flex-grow-1" style="width: 100%;">
                             <button type="submit" class="btn btn-success w-100 h-100">Zapłać</button>
                         </form>
-                        <form th:action="@{/reservations/delete/{reservationId}(reservationId=${reservationDTO.reservationId})}" method="post"
+                        <form th:action="@{/reservations/delete/{reservationId}(reservationId=${reservationDTO.reservationNumber})}" method="post"
                               class="flex-grow-1" style="width: 100%;">
                             <button type="submit" class="btn btn-danger w-100 h-100">Usuń rezerwację</button>
                         </form>

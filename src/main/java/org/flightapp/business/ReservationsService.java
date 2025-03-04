@@ -8,15 +8,14 @@ import org.flightapp.domain.ReservationStatus;
 import org.flightapp.domain.Reservations;
 import org.flightapp.domain.User;
 import org.flightapp.domain.exception.NotFoundException;
-import org.springframework.boot.actuate.endpoint.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -28,8 +27,10 @@ public class ReservationsService {
 
 
     public Reservations createReservation(String userName, Reservations reservations) {
-        User existingUser = userService.findUserByUserName(userName);
-        Reservations reservationToSave = reservations.withStatus(ReservationStatus.WAITING_FOR_PAYMENT)
+        User existingUser = userService.findUserByUserNameWithReservations(userName);
+        Reservations reservationToSave = reservations
+                .withReservationNumber(UUID.randomUUID().toString().substring(0, 10))
+                .withStatus(ReservationStatus.WAITING_FOR_PAYMENT)
                 .withUser(existingUser)
                 .withCreatedAt(LocalDateTime.now());
         Set<Reservations> existingReservations = existingUser.getReservations();
@@ -39,18 +40,27 @@ public class ReservationsService {
     }
 
     @Transactional
-    public Reservations payReservation(Integer reservationId) throws AccessDeniedException {
+    public void payReservation(String reservationNumber) throws AccessDeniedException {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findUserByUserName(userName);
-        Optional<Reservations> updatedUserReservation = user.getReservations().stream()
-                .filter(reservation -> reservation.getReservationId().equals(reservationId))
-                .map(reservation -> reservation.withStatus(ReservationStatus.PAID))
-                .findFirst();
-        System.out.println("Updated user reservation: " + updatedUserReservation);
-        if(!updatedUserReservation.get().getUser().getUserName().equals(userName)) {
-            throw new AccessDeniedException("User is not allowed to pay for this reservation");
+        User existingUser = userService.findUserByUserNameWithReservations(userName);
+        Reservations reservation = reservationsDAO.findReservationByReservationNumber(reservationNumber);
+        if (!reservation.getUser().getUserName().equals(userName)) {
+            throw new AccessDeniedException("You are not allowed to pay for this reservation");
         }
-        return reservationsDAO.saveReservation(updatedUserReservation.get());
+        Reservations updatedReservation = reservation.withStatus(ReservationStatus.PAID)
+                .withUser(existingUser);
+        reservationsDAO.saveReservation(updatedReservation);
+    }
+
+    @Transactional
+    public void deleteReservation(String reservationNumber) throws AccessDeniedException {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Reservations reservation = reservationsDAO.findReservationByReservationNumber(reservationNumber);
+        if (!reservation.getUser().getUserName().equals(userName)) {
+            throw new AccessDeniedException("You are not allowed to delete this reservation");
+        }
+        System.out.println("Deleting reservation: " + reservationNumber);
+        reservationsDAO.deleteReservation(reservationNumber);
     }
 
     @Transactional
@@ -59,13 +69,8 @@ public class ReservationsService {
     }
 
     @Transactional
-    public void deleteReservation(Integer reservationId) {
-        reservationsDAO.deleteReservation(reservationId);
-    }
-
-    @Transactional
-    public Reservations findReservationById(Integer reservationId) {
-        Reservations reservations = reservationsDAO.findReservationById(reservationId);
+    public Reservations findReservationByReservationNumber(String reservationNumber) {
+        Reservations reservations = reservationsDAO.findReservationByReservationNumber(reservationNumber);
         if (reservations == null) {
             throw new NotFoundException("Reservation not found");
         }

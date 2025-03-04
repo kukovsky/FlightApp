@@ -42,7 +42,7 @@ public class UsersEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<ReservationsEntity> reservations;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

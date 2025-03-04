@@ -2,12 +2,8 @@ package org.flightapp.api.controller;
 
 import lombok.AllArgsConstructor;
 import org.flightapp.api.dto.mapper.ReservationsMapper;
-import org.flightapp.api.dto.mapper.UsersMapper;
 import org.flightapp.business.ReservationsService;
-import org.flightapp.business.UserService;
 import org.flightapp.domain.Reservations;
-import org.flightapp.domain.User;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +18,8 @@ import java.nio.file.AccessDeniedException;
 @AllArgsConstructor
 public class ReservationController {
 
-    private final UserService userService;
     private final ReservationsMapper reservationsMapper;
     private final ReservationsService reservationsService;
-    private final UsersMapper usersMapper;
 
 
     @GetMapping("/reservations")
@@ -37,17 +31,17 @@ public class ReservationController {
         return "reservations";
     }
 
-    @PostMapping("/reservations/pay/{reservationId}")
-    public String payReservation(@PathVariable Integer reservationId ,RedirectAttributes redirectAttributes) throws AccessDeniedException {
-        Reservations paidReservation = reservationsService.payReservation(reservationId);
+    @PostMapping("/reservations/pay/{reservationNumber}")
+    public String payReservation(@PathVariable String reservationNumber ,RedirectAttributes redirectAttributes) throws AccessDeniedException {
+        reservationsService.payReservation(reservationNumber);
         redirectAttributes.addFlashAttribute("payMessage", "Rezerwacja opłacona pomyślnie");
         return "redirect:/reservations";
     }
 
-    @PostMapping("/reservations/delete/{reservationId}")
-    public String deleteReservation(@PathVariable Integer reservationId, RedirectAttributes redirectAttributes) throws AccessDeniedException {
-        Reservations reservation = reservationsService.findReservationById(reservationId);
-        reservationsService.deleteReservation(reservation.getReservationId());
+    @PostMapping("/reservations/delete/{reservationNumber}")
+    public String deleteReservation(@PathVariable String reservationNumber, RedirectAttributes redirectAttributes) throws AccessDeniedException {
+        Reservations reservation = reservationsService.findReservationByReservationNumber(reservationNumber);
+        reservationsService.deleteReservation(reservation.getReservationNumber());
         redirectAttributes.addFlashAttribute("deleteMessage", "Rezerwacja usunięta pomyślnie");
         return "redirect:/reservations";
     }

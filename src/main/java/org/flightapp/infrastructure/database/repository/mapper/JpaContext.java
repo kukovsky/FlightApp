@@ -2,8 +2,8 @@ package org.flightapp.infrastructure.database.repository.mapper;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.flightapp.infrastructure.database.entity.UsersEntity;
 import org.flightapp.infrastructure.database.entity.ReservationsEntity;
+import org.flightapp.infrastructure.database.entity.UsersEntity;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.MappingTarget;

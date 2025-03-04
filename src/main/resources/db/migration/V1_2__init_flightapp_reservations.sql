@@ -1,6 +1,7 @@
 CREATE TABLE reservations
 (
     reservation_id SERIAL NOT NULL,
+    reservation_number VARCHAR(10) NOT NULL,
     user_id INT NOT NULL,
     -- Lot wylotowy
     departure_origin VARCHAR(3) NOT NULL,

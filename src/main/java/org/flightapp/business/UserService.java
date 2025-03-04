@@ -3,7 +3,6 @@ package org.flightapp.business;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flightapp.api.dto.mapper.UsersMapper;
 import org.flightapp.business.dao.UserDAO;
 import org.flightapp.domain.User;
 import org.flightapp.infrastructure.database.entity.UserRoles;
@@ -23,12 +22,11 @@ public class UserService {
     private final RoleJpaRepository roleJpaRepository;
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
-    private final UsersMapper usersMapper;
 
 
     @Transactional
     public void saveReservation(User user) {
-        userDAO.saveReservation(user);
+        userDAO.processReservation(user);
     }
 
 
@@ -56,12 +54,11 @@ public class UserService {
     }
 
     @Transactional
-    public User findUserByUserName(String userName) {
-        User user = userDAO.findByUserName(userName);
-//        if (user == null) {
+    public User findUserByUserNameWithReservations(String userName) {
+        //        if (user == null) {
 //            throw new NotFoundException("User with userName: [%s] not found".formatted(userName));
 //        }
-        return user;
+        return userDAO.findByUserNameWithReservations(userName);
     }
 
 

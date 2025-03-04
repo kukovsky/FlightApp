@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,6 +20,4 @@ public class UserDTO {
     String email;
     @Size(min = 6, message = "Password must be at least 6 characters long")
     String password;
-    Set<ReservationsDTO> reservations;
-
 }

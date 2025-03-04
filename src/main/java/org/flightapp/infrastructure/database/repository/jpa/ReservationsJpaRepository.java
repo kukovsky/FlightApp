@@ -16,7 +16,8 @@ public interface ReservationsJpaRepository extends JpaRepository<ReservationsEnt
     @Query("SELECT r FROM ReservationsEntity r JOIN FETCH r.user WHERE r.reservationId = :id")
     ReservationsEntity findByReservationIdWithUser(@Param("id") Integer reservationId);
 
-    void deleteByReservationId(Integer id);
+    void deleteByReservationNumber(String reservationNumber);
 
 
+    ReservationsEntity findByReservationNumber(String reservationNumber);
 }

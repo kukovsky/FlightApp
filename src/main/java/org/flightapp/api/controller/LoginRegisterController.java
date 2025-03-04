@@ -40,7 +40,7 @@ public class LoginRegisterController {
             BindingResult result,
             Model model
     ) {
-        User existingByUserName = userService.findUserByUserName(userDTO.getUserName());
+        User existingByUserName = userService.findUserByUserNameWithReservations(userDTO.getUserName());
         User existingByEmail = userService.findUserByEmail(userDTO.getEmail());
         if (existingByUserName != null) {
             result.rejectValue("userName", "error.user", "Nazwa użytkownika jest już zajęta");

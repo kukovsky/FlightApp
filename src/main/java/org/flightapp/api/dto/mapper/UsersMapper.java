@@ -3,16 +3,12 @@ package org.flightapp.api.dto.mapper;
 import org.flightapp.api.dto.UserDTO;
 import org.flightapp.domain.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", uses = ReservationsMapper.class)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UsersMapper {
 
     UserDTO map(final User user);
 
-    @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "active", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "userId", ignore = true)
     User map(UserDTO userDTO);
 }

@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 @With
 @Value
 @Builder
-@EqualsAndHashCode(of = {"reservationId", "departureFlightNumber", "returnFlightNumber"})
+@EqualsAndHashCode(of = {"reservationNumber"})
 @ToString()
 public class Reservations {
 
     Integer reservationId;
+    String reservationNumber;
     String departureOrigin;
     String departureDestination;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

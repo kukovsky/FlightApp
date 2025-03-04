@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ReservationsDAO {
 
-    Reservations findReservationById(Integer reservationId);
+    Reservations findReservationByReservationNumber(String reservationNumber);
     List<Reservations> findByUserNameOrderStatusAscDepartureDateDesc(String userName);
-    Reservations saveReservation(Reservations reservations);
-    void deleteReservation(Integer reservationId);
+    void deleteReservation(String reservationNumber);
 
+    void saveReservation(Reservations updatedReservation);
 }

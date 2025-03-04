@@ -6,6 +6,6 @@ public interface UserDAO {
 
     User saveUser(User user);
     User findByEmail(String email);
-    User findByUserName(String userName);
-    void saveReservation(User user);
+    User findByUserNameWithReservations(String userName);
+    void processReservation(User user);
 }

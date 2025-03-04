@@ -5,6 +5,7 @@ import org.flightapp.business.dao.ReservationsDAO;
 import org.flightapp.domain.Reservations;
 import org.flightapp.infrastructure.database.entity.ReservationsEntity;
 import org.flightapp.infrastructure.database.repository.jpa.ReservationsJpaRepository;
+import org.flightapp.infrastructure.database.repository.mapper.JpaContext;
 import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMapper;
 import org.springframework.stereotype.Repository;
 
@@ -16,34 +17,34 @@ public class ReservationsRepository implements ReservationsDAO {
 
     private final ReservationsJpaRepository reservationsJpaRepository;
     private final SourceTargetMapper sourceTargetMapper;
+    private JpaContext jpaContext;
 
     @Override
-    public Reservations findReservationById(Integer reservationId) {
-        ReservationsEntity reservationsEntity = reservationsJpaRepository.findByReservationIdWithUser(reservationId);
-        return sourceTargetMapper.fromEntity(reservationsEntity);
-
+    public Reservations findReservationByReservationNumber(String reservationNumber) {
+        ReservationsEntity reservationsEntity = reservationsJpaRepository.findByReservationNumber(reservationNumber);
+        return sourceTargetMapper.fromEntity(reservationsEntity, jpaContext);
     }
 
     @Override
     public List<Reservations> findByUserNameOrderStatusAscDepartureDateDesc(String userName) {
         return reservationsJpaRepository.findByUserUserNameOrderByStatusAscDepartureDateAsc(userName).stream()
-                .map((ReservationsEntity entity) -> sourceTargetMapper.fromEntity(entity))
+                .map(reservationsEntity -> sourceTargetMapper.fromEntity(reservationsEntity, jpaContext))
                 .toList();
     }
 
 
     @Override
-    public Reservations saveReservation(Reservations reservations) {
-        ReservationsEntity toSave = sourceTargetMapper.toEntity(reservations);
-        ReservationsEntity savedEntity = reservationsJpaRepository.save(toSave);
-        return sourceTargetMapper.fromEntity(savedEntity);
+    public void deleteReservation(String reservationNumber) {
+        reservationsJpaRepository.deleteByReservationNumber(reservationNumber);
     }
 
     @Override
-    public void deleteReservation(Integer reservationId) {
-        reservationsJpaRepository.deleteByReservationId(reservationId);
+    public void saveReservation(Reservations updatedReservation) {
+        System.out.println("Updated reservation: " + updatedReservation);
+        ReservationsEntity reservationsEntity = sourceTargetMapper.toEntity(updatedReservation, jpaContext);
+        System.out.println("Updated reservation entity: " + reservationsEntity);
+        reservationsJpaRepository.save(reservationsEntity);
     }
-
 
 
 }

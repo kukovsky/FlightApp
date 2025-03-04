@@ -22,6 +22,9 @@ public class ReservationsEntity {
     @Column(name = "reservation_id", nullable = false)
     private Integer reservationId;
 
+    @Column(name = "reservation_number")
+    private String reservationNumber;
+
     @Column(name = "departure_origin", nullable = false, length = 3)
     private String departureOrigin;
 
