@@ -47,19 +47,21 @@ public class AmadeusService {
             ReservationsDTO result = new ReservationsDTO();
 
             //Mapowanie lotu wylotowego
+            int lastDepartureSegment = offer.getItineraries()[0].getSegments().length - 1;
             result.setDepartureOrigin(offer.getItineraries()[0].getSegments()[0].getDeparture().getIataCode());
-            result.setDepartureDestination(offer.getItineraries()[0].getSegments()[0].getArrival().getIataCode());
+            result.setDepartureDestination(offer.getItineraries()[0].getSegments()[lastDepartureSegment].getArrival().getIataCode());
             result.setDepartureDate(LocalDateTime.parse(offer.getItineraries()[0].getSegments()[0].getDeparture().getAt()));
-            result.setDepartureReturnDate(LocalDateTime.parse(offer.getItineraries()[0].getSegments()[0].getArrival().getAt()));
+            result.setDepartureReturnDate(LocalDateTime.parse(offer.getItineraries()[0].getSegments()[lastDepartureSegment].getArrival().getAt()));
             result.setDepartureAirline(offer.getItineraries()[0].getSegments()[0].getCarrierCode());
             result.setDepartureFlightNumber(offer.getItineraries()[0].getSegments()[0].getNumber());
 
             //Mapowanie lotu powrotnego
             if (offer.getItineraries().length > 1) {
+                int lastReturnSegment = offer.getItineraries()[1].getSegments().length - 1;
                 result.setReturnOrigin(offer.getItineraries()[1].getSegments()[0].getDeparture().getIataCode());
-                result.setReturnDestination(offer.getItineraries()[1].getSegments()[0].getArrival().getIataCode());
+                result.setReturnDestination(offer.getItineraries()[1].getSegments()[lastReturnSegment].getArrival().getIataCode());
                 result.setReturnDepartureDate(LocalDateTime.parse(offer.getItineraries()[1].getSegments()[0].getDeparture().getAt()));
-                result.setReturnReturnDate(LocalDateTime.parse(offer.getItineraries()[1].getSegments()[0].getArrival().getAt()));
+                result.setReturnReturnDate(LocalDateTime.parse(offer.getItineraries()[1].getSegments()[lastDepartureSegment].getArrival().getAt()));
                 result.setReturnAirline(offer.getItineraries()[1].getSegments()[0].getCarrierCode());
                 result.setReturnFlightNumber(offer.getItineraries()[1].getSegments()[0].getNumber());
             }
@@ -67,7 +69,9 @@ public class AmadeusService {
             result.setPrice(new BigDecimal(offer.getPrice().getTotal()));
             result.setCurrency(offer.getPrice().getCurrency());
             result.setNumberOfPassengers(Integer.parseInt(adults));
-            result.setNumberOfStops(offer.getItineraries()[0].getSegments()[0].getNumberOfStops());
+            int departureStops = Math.max(offer.getItineraries()[0].getSegments().length-1, 0);
+            int returnStops = offer.getItineraries().length > 1 ? Math.max(offer.getItineraries()[1].getSegments().length-1, 0) : 0;
+            result.setNumberOfStops(departureStops + returnStops);
             results.add(result);
         }
         return results;

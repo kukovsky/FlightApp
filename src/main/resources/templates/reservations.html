@@ -39,11 +39,12 @@
         <table class="table table-bordered">
             <thead class="table-dark">
             <tr>
-                <th colspan="6" class="text-center">Dane wylotu</th>
+                <th colspan="7" class="text-center">Dane wylotu</th>
                 <th colspan="6" class="text-center">Dane powrotu</th>
-                <th colspan="5" class="text-center">Szczegóły rezerwacji</th>
+                <th colspan="6" class="text-center">Szczegóły rezerwacji</th>
             </tr>
             <tr>
+                <th class="text-center">Numer rezerwacji</th>
                 <th class="text-center">Numer lotu</th>
                 <th class="text-center">Miejsce wylotu</th>
                 <th class="text-center">Miejsce przylotu</th>
@@ -56,6 +57,7 @@
                 <th class="text-center">Data wylotu</th>
                 <th class="text-center">Data powrotu</th>
                 <th class="text-center">Linie lotnicze</th>
+                <th class="text-center">Liczba przesiadek</th>
                 <th class="text-center">Liczba pasażerów</th>
                 <th class="text-center">Cena</th>
                 <th class="text-center">Waluta</th>
@@ -66,6 +68,7 @@
             <tbody>
             <tr th:each="reservationDTO : ${allReservationsDTO}">
                 <!-- Wiersz dla lotu wylotowego -->
+                <td class="text-center" th:text="${reservationDTO.reservationNumber}"></td>
                 <td class="text-center" th:text="${reservationDTO.departureFlightNumber}"></td>
                 <td class="text-center" th:text="${reservationDTO.departureOrigin}"></td>
                 <td class="text-center" th:text="${reservationDTO.departureDestination}"></td>
@@ -78,6 +81,7 @@
                 <td class="text-center" th:text="${#temporals.format(reservationDTO.returnDepartureDate, 'dd.MM.yyyy HH:mm')}"></td>
                 <td class="text-center" th:text="${reservationDTO.returnReturnDate != null ? #temporals.format(reservationDTO.returnReturnDate, 'dd.MM.yyyy HH:mm') : ''}"></td>
                 <td class="text-center" th:text="${reservationDTO.returnAirline}"></td>
+                <td class="text-center" th:text="${reservationDTO.numberOfStops}"></td>
                 <td class="text-center" th:text="${reservationDTO.numberOfPassengers}"></td>
                 <td class="text-center" th:text="${reservationDTO.price}"></td>
                 <td class="text-center" th:text="${reservationDTO.currency}"></td>

@@ -29,7 +29,7 @@ public class ReservationsService {
     public Reservations createReservation(String userName, Reservations reservations) {
         User existingUser = userService.findUserByUserNameWithReservations(userName);
         Reservations reservationToSave = reservations
-                .withReservationNumber(UUID.randomUUID().toString().substring(0, 10))
+                .withReservationNumber(UUID.randomUUID().toString().substring(0, 8))
                 .withStatus(ReservationStatus.WAITING_FOR_PAYMENT)
                 .withUser(existingUser)
                 .withCreatedAt(LocalDateTime.now());
