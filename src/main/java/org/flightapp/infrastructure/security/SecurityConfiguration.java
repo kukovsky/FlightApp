@@ -50,8 +50,9 @@ public class SecurityConfiguration {
                         authorize.requestMatchers("/register/**", "/css/**", "/js/**").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/flights").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers("/api/**").authenticated()
-                                .requestMatchers("/reservations/**").authenticated()
+                                .requestMatchers("/api/**", "/progress/**", "/countries/**",
+                                        "/experiences/**", "/reservations/**", "/travel/**").authenticated()
+                                .anyRequest().authenticated()
                 )
                 .formLogin(
                         form -> form

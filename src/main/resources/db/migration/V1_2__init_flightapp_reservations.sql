@@ -28,4 +28,4 @@ CREATE TABLE reservations
     CONSTRAINT fk_reservations_user
         FOREIGN KEY (user_id)
             REFERENCES flightapp_users (user_id)
-)
+);

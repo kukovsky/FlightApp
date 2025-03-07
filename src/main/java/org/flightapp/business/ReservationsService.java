@@ -25,7 +25,7 @@ public class ReservationsService {
     private final ReservationsDAO reservationsDAO;
     private final UserService userService;
 
-
+    @Transactional
     public Reservations createReservation(String userName, Reservations reservations) {
         User existingUser = userService.findUserByUserNameWithReservations(userName);
         Reservations reservationToSave = reservations

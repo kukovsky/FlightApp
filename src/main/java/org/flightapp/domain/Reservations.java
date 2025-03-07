@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Value
 @Builder
 @EqualsAndHashCode(of = {"reservationNumber"})
-@ToString()
+@ToString(exclude = "user")
 public class Reservations {
 
     Integer reservationId;

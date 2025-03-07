@@ -50,6 +50,12 @@ public class UserRepository implements UserDAO {
     }
 
     @Override
+    public User findByUserName(String userName) {
+        UsersEntity usersEntity = userJpaRepository.findByUserName(userName);
+        return sourceTargetMapper.fromEntity(usersEntity, jpaContext);
+    }
+
+    @Override
     public User findByUserNameWithReservations(String userName) {
         UsersEntity usersEntity = userJpaRepository.findByUserNameWithReservations(userName);
         return sourceTargetMapper.fromEntity(usersEntity, jpaContext);

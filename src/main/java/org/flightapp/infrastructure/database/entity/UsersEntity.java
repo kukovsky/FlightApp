@@ -9,7 +9,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"userId"})
-@ToString(exclude = {"reservations", "roles"})
+@ToString(exclude = {"reservations", "roles", "countries", "experience"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -44,6 +44,12 @@ public class UsersEntity {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<ReservationsEntity> reservations;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<CountriesEntity> countries;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<ExperienceEntity> experience;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

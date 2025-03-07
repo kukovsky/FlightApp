@@ -1,0 +1,22 @@
+.circle-card {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+.circle-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 50px;
+}
+.circle-blue { background-color: #007bff; }
+.circle-green { background-color: #28a745; }
+.circle-orange { background-color: #fd7e14; }

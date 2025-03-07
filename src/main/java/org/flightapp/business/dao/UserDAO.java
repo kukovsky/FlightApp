@@ -8,4 +8,5 @@ public interface UserDAO {
     User findByEmail(String email);
     User findByUserNameWithReservations(String userName);
     void processReservation(User user);
+    User findByUserName(String userName);
 }
