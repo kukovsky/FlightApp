@@ -1,9 +1,6 @@
-/* Zapewniamy, że kontener formularza ma 'relative' pozycjonowanie */
 .mb-3 {
     position: relative;
 }
-
-/* Dopasowanie szerokości listy do pola input */
 .suggestions-list {
     list-style-type: none;
     padding: 0;
@@ -17,8 +14,6 @@
     left: 0;
     top: 100%;  /* Dopasowanie do pozycji inputa */
 }
-
-/* Stylowanie elementów listy sugestii */
 .suggestion-item {
     padding: 10px;
     cursor: pointer;

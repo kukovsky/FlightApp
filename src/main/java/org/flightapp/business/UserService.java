@@ -46,18 +46,11 @@ public class UserService {
 
     @Transactional
     public User findUserByEmail(String email) {
-        User user = userDAO.findByEmail(email);
-//        if (user == null) {
-//            throw new NotFoundException("User with email: [%s] not found".formatted(email));
-//        }
-        return user;
+        return userDAO.findByEmail(email);
     }
 
     @Transactional
     public User findUserByUserNameWithReservations(String userName) {
-        //        if (user == null) {
-//            throw new NotFoundException("User with userName: [%s] not found".formatted(userName));
-//        }
         return userDAO.findByUserNameWithReservations(userName);
     }
 
