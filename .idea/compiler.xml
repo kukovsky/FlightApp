@@ -19,5 +19,8 @@
         <module name="FlightApp.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="FlightApp" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
