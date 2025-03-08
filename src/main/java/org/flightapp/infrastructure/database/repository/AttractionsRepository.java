@@ -10,6 +10,7 @@ import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMappe
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -28,9 +29,9 @@ public class AttractionsRepository implements AttractionsDAO {
     }
 
     @Override
-    public Attractions findByAttractionUUID(String attractionUUID) {
-        AttractionsEntity attractionEntity = attractionsJpaRepository.findByAttractionUUID(attractionUUID);
-        return sourceTargetMapper.fromEntity(attractionEntity, jpaContext);
+    public Optional<Attractions> findByAttractionUUID(String attractionUUID) {
+            return attractionsJpaRepository.findByAttractionUUID(attractionUUID)
+                    .map(attractionsEntity -> sourceTargetMapper.fromEntity(attractionsEntity, jpaContext));
     }
 
     @Override
@@ -41,7 +42,7 @@ public class AttractionsRepository implements AttractionsDAO {
     @Override
     public List<Attractions> findAllAttractions(String countryUUID) {
         return attractionsJpaRepository.findAllByCountryCountryUUID(countryUUID).stream()
-                .map(attractions -> sourceTargetMapper.fromEntity(attractions, jpaContext))
+                .map(attractionsEntity -> sourceTargetMapper.fromEntity(attractionsEntity, jpaContext))
                 .toList();
     }
 

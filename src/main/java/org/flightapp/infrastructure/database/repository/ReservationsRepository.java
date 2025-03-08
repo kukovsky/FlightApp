@@ -10,6 +10,7 @@ import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMappe
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -20,9 +21,9 @@ public class ReservationsRepository implements ReservationsDAO {
     private JpaContext jpaContext;
 
     @Override
-    public Reservations findReservationByReservationNumber(String reservationNumber) {
-        ReservationsEntity reservationsEntity = reservationsJpaRepository.findByReservationNumber(reservationNumber);
-        return sourceTargetMapper.fromEntity(reservationsEntity, jpaContext);
+    public Optional<Reservations> findReservationByReservationNumber(String reservationNumber) {
+        return reservationsJpaRepository.findByReservationNumber(reservationNumber)
+                .map(reservationsEntity -> sourceTargetMapper.fromEntity(reservationsEntity, jpaContext));
     }
 
     @Override
@@ -40,9 +41,7 @@ public class ReservationsRepository implements ReservationsDAO {
 
     @Override
     public void saveReservation(Reservations updatedReservation) {
-        System.out.println("Updated reservation: " + updatedReservation);
         ReservationsEntity reservationsEntity = sourceTargetMapper.toEntity(updatedReservation, jpaContext);
-        System.out.println("Updated reservation entity: " + reservationsEntity);
         reservationsJpaRepository.save(reservationsEntity);
     }
 

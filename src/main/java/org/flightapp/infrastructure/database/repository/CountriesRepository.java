@@ -10,6 +10,7 @@ import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMappe
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -20,16 +21,10 @@ public class CountriesRepository implements CountriesDAO {
     private final CountriesJpaRepository countriesJpaRepository;
 
     @Override
-    public Countries saveCountry(Countries country) {
+    public void saveCountry(Countries country) {
         CountriesEntity countriesToSave = sourceTargetMapper.toEntity(country, jpaContext);
         CountriesEntity savedCountry = countriesJpaRepository.save(countriesToSave);
-        return sourceTargetMapper.fromEntity(savedCountry, jpaContext);
-    }
-
-    @Override
-    public Countries findCountryByCountryUUID(String countryUUID) {
-        CountriesEntity countriesEntity = countriesJpaRepository.findByCountryUUID(countryUUID);
-        return sourceTargetMapper.fromEntity(countriesEntity, jpaContext);
+        sourceTargetMapper.fromEntity(savedCountry, jpaContext);
     }
 
     @Override
@@ -38,16 +33,22 @@ public class CountriesRepository implements CountriesDAO {
     }
 
     @Override
+    public Optional<Countries> findCountryByCountryUUID(String countryUUID) {
+        return countriesJpaRepository.findByCountryUUID(countryUUID)
+                .map(countriesEntity -> sourceTargetMapper.fromEntity(countriesEntity, jpaContext));
+    }
+
+    @Override
+    public Optional<Countries> findCountryByCountryNameAndUserName(String countryName, String userName) {
+        return countriesJpaRepository.findByCountryNameAndUserUserName(countryName, userName)
+                .map(countriesEntity -> sourceTargetMapper.fromEntity(countriesEntity, jpaContext));
+    }
+
+    @Override
     public List<Countries> findAllCountriesToVisit(String userName) {
         return countriesJpaRepository.findAllByUserUserNameAndVisitedFalse(userName).stream()
                 .map(countriesEntity -> sourceTargetMapper.fromEntity(countriesEntity, jpaContext))
                 .toList();
-    }
-
-    @Override
-    public Countries findCountryByCountryNameAndUserName(String countryName, String userName) {
-        CountriesEntity countriesEntity = countriesJpaRepository.findByCountryNameAndUserUserName(countryName, userName);
-        return sourceTargetMapper.fromEntity(countriesEntity, jpaContext);
     }
 
     @Override

@@ -9,11 +9,13 @@ import org.flightapp.business.dao.ExperienceDAO;
 import org.flightapp.business.dao.UserDAO;
 import org.flightapp.domain.Experience;
 import org.flightapp.domain.User;
+import org.flightapp.domain.exception.NotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -27,11 +29,16 @@ public class ExperienceService {
     @Transactional
     public Experience addExperience(Experience experience) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User existingUser = userDAO.findByUserName(userName);
+        Optional<User> existingUser = userDAO.findByUserName(userName);
+        if (existingUser.isPresent()) {
+            log.info("Znaleziono użytkownika o nazwie: {}", existingUser.get().getUserName());
+        } else {
+            throw new NotFoundException("Nie znaleziono użytkownika o podanej nazwie");
+        }
         Experience experienceToSave = experience
                 .withExperienceUUID(UUID.randomUUID().toString())
                 .withExperienceComment(experience.getExperienceComment())
-                .withUser(existingUser)
+                .withUser(existingUser.get())
                 .withDone(false);
         return experienceDAO.saveExperience(experienceToSave);
     }
@@ -39,7 +46,7 @@ public class ExperienceService {
     @Transactional
     public void changeExperienceStatus(String experienceUUID) throws AccessDeniedException {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        Experience exisitingExperience = experienceDAO.findByExperienceUUID(experienceUUID);
+        Experience exisitingExperience = findExperienceByUUID(experienceUUID);
         if (!exisitingExperience.getUser().getUserName().equals(userName)) {
             throw new AccessDeniedException("Nie masz uprawnień do edycji tego doświadczenia");
         }
@@ -50,7 +57,7 @@ public class ExperienceService {
     @Transactional
     public void deleteExperience(String experienceUUID) throws AccessDeniedException {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        Experience exisitingExperience = experienceDAO.findByExperienceUUID(experienceUUID);
+        Experience exisitingExperience = findExperienceByUUID(experienceUUID);
         if (!exisitingExperience.getUser().getUserName().equals(userName)) {
             throw new AccessDeniedException("Nie masz uprawnień do usunięcia tego doświadczenia");
         }
@@ -60,20 +67,27 @@ public class ExperienceService {
     @Transactional
     public void updateExperience(ExperienceDTO experienceDTO) throws AccessDeniedException {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        Experience experience = experienceDAO.findByExperienceUUID(experienceDTO.getExperienceUUID());
+        Experience experience = findExperienceByUUID(experienceDTO.getExperienceUUID());
         if (!experience.getUser().getUserName().equals(userName)) {
             throw new AccessDeniedException("Nie masz uprawnień do edycji tego doświadczenia");
         }
         Experience updatedExperience = experience.withExperienceComment(experienceDTO.getExperienceComment());
         experienceDAO.saveExperience(updatedExperience);
+        log.info("Zaktualizowano doświadczenie o identyfikatorze: {}", experience.getExperienceUUID());
 
+    }
+
+    @Transactional
+    public Experience findExperienceByUUID(String experienceUUID) {
+        Optional<Experience> experience = experienceDAO.findByExperienceUUID(experienceUUID);
+        if (experience.isEmpty()) {
+            throw new NotFoundException("Nie znaleziono doświadczenia o podanym identyfikatorze");
+        }
+        log.info("Znaleziono doświadczenie o identyfikatorze: {}", experience.get().getExperienceUUID());
+        return experience.get();
     }
 
     public List<Experience> findAllExperiences(String userName) {
         return experienceDAO.findAllExperiences(userName);
-    }
-
-    public Experience findExperienceByUUID(String experienceUUID) {
-        return experienceDAO.findByExperienceUUID(experienceUUID);
     }
 }

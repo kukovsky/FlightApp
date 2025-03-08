@@ -31,7 +31,6 @@ public class ReservationsRestController {
         String userName = auth.getName();
         Reservations reservation = reservationsMapper.map(reservationsDTO);
         Reservations savedReservation = reservationsService.createReservation(userName, reservation);
-        System.out.println("Saved reservation: " + savedReservation);
         return ResponseEntity.ok(Map.of(
                 "message", "Rezerwacja zapisana!",
                 "status", savedReservation.getStatus()

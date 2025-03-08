@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -40,18 +41,22 @@ public class UserService {
                 .withRoles(Set.of(role))
                 .withCreatedAt(LocalDateTime.now())
                 .withActive(true);
-        log.info("User saved: [userName={}, email={}, roles={}]", user.getUserName(), user.getEmail(), user.getRoles());
+        log.info("Użytkownik zapisany: [userName={}, email={}, roles={}]", user.getUserName(), user.getEmail(), user.getRoles());
         return userDAO.saveUser(userToSave);
     }
 
     @Transactional
     public User findUserByEmail(String email) {
-        return userDAO.findByEmail(email);
+        Optional<User> user = userDAO.findByEmail(email);
+        log.info("Użytkownik znaleziony do sprawdzenia rejestracji: [email={}]", email);
+        return user.orElse(null);
     }
 
     @Transactional
     public User findUserByUserNameWithReservations(String userName) {
-        return userDAO.findByUserNameWithReservations(userName);
+        Optional<User> user = userDAO.findByUserNameWithReservations(userName);
+        log.info("Użytkownik znaleziony do sprawdzenia rejestracji: [userName={}]", userName);
+        return user.orElse(null);
     }
 
 

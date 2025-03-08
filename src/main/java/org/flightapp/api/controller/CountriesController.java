@@ -48,15 +48,13 @@ public class CountriesController {
     ) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Countries existingCountry = countriesService.findCountryByCountryNameByUserName(countryDTO.getCountryName(), userName);
-        System.out.println("existingCountry: " + existingCountry);
         if (existingCountry != null) {
             result.rejectValue("countryName", "error.countryName", "Państwo o tej nazwie już istnieje");
         }
         if (result.hasErrors()) {
             return "countries-add";
         }
-        Countries countryToSave = countriesService.addCountry(countriesMapper.map(countryDTO));
-        log.info("Country saved: [country={}]", countryToSave.getCountryName());
+        countriesService.addCountry(countriesMapper.map(countryDTO));
         return "redirect:/countries?success";
     }
 

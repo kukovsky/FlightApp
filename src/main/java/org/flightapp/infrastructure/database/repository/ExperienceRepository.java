@@ -10,6 +10,7 @@ import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMappe
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class ExperienceRepository implements ExperienceDAO {
 
     @Override
     public Experience saveExperience(Experience experience) {
-        ExperienceEntity experienceToSave = sourceTargetMapper.toEntity(experience,jpaContext);
+        ExperienceEntity experienceToSave = sourceTargetMapper.toEntity(experience, jpaContext);
         ExperienceEntity savedExperience = experienceJpaRepository.save(experienceToSave);
         return sourceTargetMapper.fromEntity(savedExperience, jpaContext);
     }
@@ -33,9 +34,9 @@ public class ExperienceRepository implements ExperienceDAO {
     }
 
     @Override
-    public Experience findByExperienceUUID(String experienceUUID) {
-        ExperienceEntity experienceEntity = experienceJpaRepository.findByExperienceUUID(experienceUUID);
-        return sourceTargetMapper.fromEntity(experienceEntity, jpaContext);
+    public Optional<Experience> findByExperienceUUID(String experienceUUID) {
+        return experienceJpaRepository.findByExperienceUUID(experienceUUID)
+                .map(experienceEntity -> sourceTargetMapper.fromEntity(experienceEntity, jpaContext));
     }
 
     @Override

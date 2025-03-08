@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +29,9 @@ public class ReservationsService {
     @Transactional
     public Reservations createReservation(String userName, Reservations reservations) {
         User existingUser = userService.findUserByUserNameWithReservations(userName);
+        if (existingUser == null){
+            throw new NotFoundException("User not found");
+        }
         Reservations reservationToSave = reservations
                 .withReservationNumber(UUID.randomUUID().toString().substring(0, 8))
                 .withStatus(ReservationStatus.WAITING_FOR_PAYMENT)
@@ -36,6 +40,7 @@ public class ReservationsService {
         Set<Reservations> existingReservations = existingUser.getReservations();
         existingReservations.add(reservationToSave);
         userService.saveReservation(existingUser.withReservations(existingReservations));
+        log.info("Rezerwacja zapisana: {}", reservationToSave.getReservationNumber());
         return reservationToSave;
     }
 
@@ -43,24 +48,25 @@ public class ReservationsService {
     public void payReservation(String reservationNumber) throws AccessDeniedException {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User existingUser = userService.findUserByUserNameWithReservations(userName);
-        Reservations reservation = reservationsDAO.findReservationByReservationNumber(reservationNumber);
+        Reservations reservation = findReservationByReservationNumber(reservationNumber);
         if (!reservation.getUser().getUserName().equals(userName)) {
             throw new AccessDeniedException("You are not allowed to pay for this reservation");
         }
         Reservations updatedReservation = reservation.withStatus(ReservationStatus.PAID)
                 .withUser(existingUser);
         reservationsDAO.saveReservation(updatedReservation);
+        log.info("Rezerwacja zapłacona: {}", reservationNumber);
     }
 
     @Transactional
     public void deleteReservation(String reservationNumber) throws AccessDeniedException {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        Reservations reservation = reservationsDAO.findReservationByReservationNumber(reservationNumber);
+        Reservations reservation = findReservationByReservationNumber(reservationNumber);
         if (!reservation.getUser().getUserName().equals(userName)) {
             throw new AccessDeniedException("You are not allowed to delete this reservation");
         }
-        System.out.println("Deleting reservation: " + reservationNumber);
         reservationsDAO.deleteReservation(reservationNumber);
+        log.info("Rezerwacja usunięta: {}", reservationNumber);
     }
 
     @Transactional
@@ -70,11 +76,11 @@ public class ReservationsService {
 
     @Transactional
     public Reservations findReservationByReservationNumber(String reservationNumber) {
-        Reservations reservations = reservationsDAO.findReservationByReservationNumber(reservationNumber);
-        if (reservations == null) {
+        Optional<Reservations> reservations = reservationsDAO.findReservationByReservationNumber(reservationNumber);
+        if (reservations.isEmpty()) {
             throw new NotFoundException("Reservation not found");
         }
-        System.out.println("Reservation found: " + reservations);
-        return reservations;
+        log.info("Znaleziono rezerwację: {}", reservationNumber);
+        return reservations.get();
     }
 }

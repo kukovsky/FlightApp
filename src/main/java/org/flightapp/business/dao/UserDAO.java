@@ -2,11 +2,13 @@ package org.flightapp.business.dao;
 
 import org.flightapp.domain.User;
 
+import java.util.Optional;
+
 public interface UserDAO {
 
     User saveUser(User user);
-    User findByEmail(String email);
-    User findByUserNameWithReservations(String userName);
+    Optional<User> findByEmail(String email);
+    Optional<User> findByUserNameWithReservations(String userName);
     void processReservation(User user);
-    User findByUserName(String userName);
+    Optional<User> findByUserName(String userName);
 }

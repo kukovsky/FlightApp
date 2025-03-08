@@ -4,11 +4,12 @@ import org.flightapp.infrastructure.database.entity.AttractionsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AttractionsJpaRepository extends JpaRepository<AttractionsEntity, Integer> {
 
 
-    AttractionsEntity findByAttractionUUID(String attractionUUID);
+    Optional<AttractionsEntity> findByAttractionUUID(String attractionUUID);
 
     void deleteByAttractionUUID(String attractionUUID);
 

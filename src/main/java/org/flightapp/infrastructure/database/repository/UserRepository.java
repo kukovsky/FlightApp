@@ -11,6 +11,7 @@ import org.flightapp.infrastructure.database.repository.mapper.SourceTargetMappe
 import org.springframework.stereotype.Repository;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -44,21 +45,21 @@ public class UserRepository implements UserDAO {
 
 
     @Override
-    public User findByEmail(String email) {
-        UsersEntity userEntity = userJpaRepository.findByEmail(email);
-        return sourceTargetMapper.fromEntity(userEntity, jpaContext);
+    public Optional<User> findByEmail(String email) {
+        return userJpaRepository.findByEmail(email)
+                .map(userEntity -> sourceTargetMapper.fromEntity(userEntity, jpaContext));
     }
 
     @Override
-    public User findByUserName(String userName) {
-        UsersEntity usersEntity = userJpaRepository.findByUserName(userName);
-        return sourceTargetMapper.fromEntity(usersEntity, jpaContext);
+    public Optional<User> findByUserName(String userName) {
+        return userJpaRepository.findByUserName(userName)
+                .map(usersEntity -> sourceTargetMapper.fromEntity(usersEntity, jpaContext));
     }
 
     @Override
-    public User findByUserNameWithReservations(String userName) {
-        UsersEntity usersEntity = userJpaRepository.findByUserNameWithReservations(userName);
-        return sourceTargetMapper.fromEntity(usersEntity, jpaContext);
+    public Optional<User> findByUserNameWithReservations(String userName) {
+        return userJpaRepository.findByUserNameWithReservations(userName)
+                .map(usersEntity -> sourceTargetMapper.fromEntity(usersEntity, jpaContext));
     }
 
 }

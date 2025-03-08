@@ -52,8 +52,7 @@ public class LoginRegisterController {
             model.addAttribute("user", userDTO);
             return "/register";
         }
-        User userToSave = userService.save(usersMapper.map(userDTO));
-        log.info("User saved: [userName={}, email={}]", userToSave.getUserName(), userToSave.getEmail());
+        userService.save(usersMapper.map(userDTO));
         return "redirect:/register?success";
     }
 }

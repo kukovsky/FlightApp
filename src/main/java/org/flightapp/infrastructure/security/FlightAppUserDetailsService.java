@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,12 +27,12 @@ public class FlightAppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UsersEntity user = userJpaRepository.findByUserName(username);
-        if (user == null) {
+        Optional<UsersEntity> user = userJpaRepository.findByUserName(username);
+        if (user.isEmpty()) {
             throw new NotFoundException("User with username: [%s] not found".formatted(username));
         }
-        List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
-        return buildUserForAuthentication(user, authorities);
+        List<GrantedAuthority> authorities = getUserAuthority(user.get().getRoles());
+        return buildUserForAuthentication(user.orElse(null), authorities);
     }
 
     private List<GrantedAuthority> getUserAuthority(Set<UserRoles> userRoles) {

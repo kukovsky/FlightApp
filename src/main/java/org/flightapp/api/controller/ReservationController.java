@@ -27,7 +27,6 @@ public class ReservationController {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         var allReservations = reservationsService.findAllReservationsSorted(userName).stream()
                 .map(reservationsMapper::map).toList();
-        System.out.println("All reservations: " + allReservations);
         model.addAttribute("allReservationsDTO", allReservations);
         return "reservations";
     }

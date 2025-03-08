@@ -6,15 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserJpaRepository extends JpaRepository<UsersEntity, Integer> {
 
-    UsersEntity findByEmail(String userId);
+    Optional<UsersEntity> findByEmail(String userId);
 
-    UsersEntity findByUserName(String userName);
+    Optional<UsersEntity> findByUserName(String userName);
 
     @Query("SELECT u FROM UsersEntity u LEFT JOIN FETCH u.reservations WHERE u.userName = :userName")
-    UsersEntity findByUserNameWithReservations(@Param("userName") String userName);
+    Optional<UsersEntity> findByUserNameWithReservations(@Param("userName") String userName);
 
 
 
