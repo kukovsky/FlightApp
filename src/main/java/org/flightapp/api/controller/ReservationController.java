@@ -7,9 +7,7 @@ import org.flightapp.domain.Reservations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
@@ -31,14 +29,14 @@ public class ReservationController {
         return "reservations";
     }
 
-    @PostMapping("/reservations/pay/{reservationNumber}")
+    @PutMapping("/reservations/pay/{reservationNumber}")
     public String payReservation(@PathVariable String reservationNumber ,RedirectAttributes redirectAttributes) throws AccessDeniedException {
         reservationsService.payReservation(reservationNumber);
         redirectAttributes.addFlashAttribute("payMessage", "Rezerwacja opłacona pomyślnie");
         return "redirect:/reservations";
     }
 
-    @PostMapping("/reservations/delete/{reservationNumber}")
+    @DeleteMapping("/reservations/delete/{reservationNumber}")
     public String deleteReservation(@PathVariable String reservationNumber, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         Reservations reservation = reservationsService.findReservationByReservationNumber(reservationNumber);
         reservationsService.deleteReservation(reservation.getReservationNumber());

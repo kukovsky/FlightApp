@@ -58,14 +58,14 @@ public class CountriesController {
         return "redirect:/countries?success";
     }
 
-    @PostMapping("/edit/{countryUUID}")
+    @PutMapping("/edit/{countryUUID}")
     public String editCountry(@PathVariable String countryUUID, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         countriesService.changeCountryStatus(countryUUID);
         redirectAttributes.addFlashAttribute("statusMessage", "Status zmieniony pomyślnie");
         return "redirect:/countries";
     }
 
-    @PostMapping("/delete/{countryUUID}")
+    @DeleteMapping("/delete/{countryUUID}")
     public String deleteCountry(@PathVariable String countryUUID, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         Countries countryToDelete = countriesService.findCountryByCountryUUID(countryUUID);
         countriesService.deleteCountry(countryToDelete.getCountryUUID());

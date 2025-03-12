@@ -10,6 +10,7 @@ import java.time.LocalTime;
 @Builder
 @EqualsAndHashCode(of = {"attractionUUID"})
 @ToString(exclude = "country")
+
 public class Attractions {
 
     Integer attractionId;

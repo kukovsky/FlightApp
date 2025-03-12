@@ -62,7 +62,7 @@ public class ExperienceController {
         return "redirect:/experiences?success";
     }
 
-    @PostMapping("/edit-status/{experienceUUID}")
+    @PutMapping("/edit-status/{experienceUUID}")
     public String experienceEditStatus(@PathVariable String experienceUUID, Model model, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         experienceService.changeExperienceStatus(experienceUUID);
         redirectAttributes.addFlashAttribute("statusMessage", "Status doświadczenia został zmieniony");
@@ -70,7 +70,7 @@ public class ExperienceController {
         return "redirect:/experiences";
     }
 
-    @PostMapping("/delete/{experienceUUID}")
+    @DeleteMapping("/delete/{experienceUUID}")
     public String experienceDelete(@PathVariable String experienceUUID, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         experienceService.deleteExperience(experienceUUID);
         redirectAttributes.addFlashAttribute("deleteMessage", "Doświadczenie zostało usunięte");

@@ -59,7 +59,7 @@ public class TravelController {
         return "redirect:/travel/" + countryUUID;
     }
 
-    @PostMapping("/{countryUUID}/update")
+    @PutMapping("/{countryUUID}/update")
     public String updateAttraction(
             @PathVariable String countryUUID,
             @ModelAttribute AttractionsDTO attractionsDTO,
@@ -72,7 +72,7 @@ public class TravelController {
         return "redirect:/travel/" + countryUUID;
     }
 
-    @PostMapping("/{countryUUID}/delete/{attractionUUID}")
+    @DeleteMapping("/{countryUUID}/delete/{attractionUUID}")
     public String deleteAttraction(@PathVariable String countryUUID,
                                    @PathVariable String attractionUUID,
                                    Model model
