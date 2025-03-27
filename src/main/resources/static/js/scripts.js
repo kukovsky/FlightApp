@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (this.value > 9) this.value = 9;
     });
 
-    // Wyszukiwanie miejsc przy wpisywaniu w pole wyszukiwania
     document.getElementById("originSearch").addEventListener("input", function () {
         const keyword = this.value;
         if (keyword.length >= 2) { // Minimum 2 litery
@@ -31,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Zdarzenie formularza do wyszukiwania lotów
     document.getElementById("flightSearchForm").addEventListener("submit", function (event) {
         event.preventDefault();
         searchFlights();
@@ -39,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-// Funkcja do wyszukiwania lokalizacji
 async function searchLocations(keyword, type) {
     try {
         const response = await fetch(`/flightapp/api/locations?keyword=${keyword}`);
@@ -58,7 +55,6 @@ async function searchLocations(keyword, type) {
     }
 }
 
-// Wypełnia listę sugestii na podstawie wyników wyszukiwania
 function populateSuggestions(locations, type) {
     const inputElement = type === 'origin' ? document.getElementById("originSearch") : document.getElementById("destinationSearch");
     const suggestionsList = type === 'origin' ? document.getElementById("originSuggestions") : document.getElementById("destinationSuggestions");
@@ -74,7 +70,6 @@ function populateSuggestions(locations, type) {
         const suggestionItem = document.createElement("li");
         suggestionItem.classList.add("suggestion-item");
 
-        // HTML dla lepszego stylu
         suggestionItem.innerHTML = `
                 <div class="suggestion-content">
                     <span class="airport-name">${location.name}</span>
@@ -82,7 +77,6 @@ function populateSuggestions(locations, type) {
                 </div>
             `;
 
-        // Dodajemy zdarzenie kliknięcia, by uzupełnić input
         suggestionItem.addEventListener('click', function () {
             inputElement.value = `${location.name} (${location.iataCode})`;
             inputElement.nextElementSibling.value = location.iataCode; // Uzupełniamy kod IATA
@@ -94,13 +88,11 @@ function populateSuggestions(locations, type) {
 }
 
 
-// Wyczyść listę sugestii
 function clearSuggestions(type) {
     const suggestionsList = document.getElementById(`${type}Suggestions`);
     suggestionsList.innerHTML = '';
 }
 
-// Wyszukiwanie lotów
 async function searchFlights() {
     const origin = document.getElementById("originCode").value;
     const destination = document.getElementById("destinationCode").value;
@@ -129,7 +121,6 @@ async function searchFlights() {
 }
 
 
-// Wyświetlanie wyników lotów
 function displayFlights(flightOffers) {
     const resultsDiv = document.getElementById('flightsResults');
     resultsDiv.innerHTML = ''; // Czyść poprzednie wyniki
@@ -222,7 +213,6 @@ function displayFlights(flightOffers) {
 
 var userName = '${user.userName}';
 
-// Funkcja rezerwacji lotu
 function reserveFlight(offer) {
     console.log('Obiekt offer:', offer); // Sprawdzamy dane lotu
     if (!userName) {
@@ -230,10 +220,8 @@ function reserveFlight(offer) {
         return;
     }
 
-    // Pobranie liczby pasażerów
     const adults = document.getElementById("passengers").value;
 
-    // Tworzenie obiektu rezerwacji
     const reservation = {
         userName: userName,
         departureOrigin: offer.departureOrigin, // Miejsce wylotu
@@ -256,7 +244,6 @@ function reserveFlight(offer) {
 
     console.log('Obiekt reservation przed wysłaniem:', reservation); // Sprawdzamy dane rezerwacji przed wysłaniem
 
-    // Jeśli istnieje lot powrotny, dodajemy go do rezerwacji
     if (offer.returnFlightNumber) {
         reservation.returnFlight = {
             returnOrigin: offer.returnOrigin, // Miejsce wylotu powrotnego
@@ -267,13 +254,12 @@ function reserveFlight(offer) {
             returnFlightNumber: offer.returnFlightNumber // Numer lotu powrotnego
         };
 
-        // Dodajemy returnDate, jeśli istnieje lot powrotny
+
         reservation.returnDate = offer.returnDepartureDate;
     }
 
-    console.log('Obiekt reservation po dodaniu lotu powrotnego:', reservation); // Sprawdzamy dane rezerwacji po dodaniu lotu powrotnego
+    console.log('Obiekt reservation po dodaniu lotu powrotnego:', reservation);
 
-    // Wysłanie rezerwacji do backendu
     const url = '/flightapp/reservations/reserve';
     fetch(url, {
         method: 'POST',

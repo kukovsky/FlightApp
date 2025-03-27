@@ -21,14 +21,12 @@ public class AmadeusService {
 
     private final Amadeus amadeus;
 
-    // Pobieranie dostępnych lokalizacji (miast, lotnisk)
     public Location[] getLocation(String keyword) throws ResponseException {
         return amadeus.referenceData.locations.get(Params
                 .with("keyword", keyword)
                 .and("subType", Locations.ANY));
     }
 
-    // Pobieranie dostępnych lotów
     public List<ReservationsDTO> getFlights(
             String origin,
             String destination,
@@ -47,12 +45,10 @@ public class AmadeusService {
         }
         FlightOfferSearch[] flightOffer = amadeus.shopping.flightOffersSearch.get(params);
 
-        //Mapowanie odpowiedzi z Amadeus na obiekt ReservationsDTO
         List<ReservationsDTO> results = new ArrayList<>();
         for (FlightOfferSearch offer : flightOffer) {
             ReservationsDTO result = new ReservationsDTO();
 
-            //Mapowanie lotu wylotowego
             int lastDepartureSegment = offer.getItineraries()[0].getSegments().length - 1;
             result.setDepartureOrigin(offer.getItineraries()[0].getSegments()[0].getDeparture().getIataCode());
             result.setDepartureDestination(offer.getItineraries()[0].getSegments()[lastDepartureSegment].getArrival().getIataCode());
@@ -61,7 +57,6 @@ public class AmadeusService {
             result.setDepartureAirline(offer.getItineraries()[0].getSegments()[0].getCarrierCode());
             result.setDepartureFlightNumber(offer.getItineraries()[0].getSegments()[0].getNumber());
 
-            //Mapowanie lotu powrotnego
             if (offer.getItineraries().length > 1) {
                 int lastReturnSegment = offer.getItineraries()[1].getSegments().length - 1;
                 result.setReturnOrigin(offer.getItineraries()[1].getSegments()[0].getDeparture().getIataCode());
@@ -71,7 +66,6 @@ public class AmadeusService {
                 result.setReturnAirline(offer.getItineraries()[1].getSegments()[0].getCarrierCode());
                 result.setReturnFlightNumber(offer.getItineraries()[1].getSegments()[0].getNumber());
             }
-            //Mapowanie pozoatlych danych
             result.setPrice(new BigDecimal(offer.getPrice().getTotal()));
             result.setCurrency(offer.getPrice().getCurrency());
             result.setNumberOfPassengers(Integer.parseInt(adults));

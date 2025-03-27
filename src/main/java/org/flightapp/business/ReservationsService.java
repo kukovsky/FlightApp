@@ -30,7 +30,7 @@ public class ReservationsService {
     public Reservations createReservation(String userName, Reservations reservations) {
         User existingUser = userService.findUserByUserNameWithReservations(userName);
         if (existingUser == null){
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("Użytkownik nieznaelziony");
         }
         Reservations reservationToSave = reservations
                 .withReservationNumber(UUID.randomUUID().toString().substring(0, 8))
@@ -50,7 +50,7 @@ public class ReservationsService {
         User existingUser = userService.findUserByUserNameWithReservations(userName);
         Reservations reservation = findReservationByReservationNumber(reservationNumber);
         if (!reservation.getUser().getUserName().equals(userName)) {
-            throw new AccessDeniedException("You are not allowed to pay for this reservation");
+            throw new AccessDeniedException("Nie jesteś uprawniony do opłacenia tej rezerwacji");
         }
         Reservations updatedReservation = reservation.withStatus(ReservationStatus.PAID)
                 .withUser(existingUser);
@@ -63,7 +63,7 @@ public class ReservationsService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Reservations reservation = findReservationByReservationNumber(reservationNumber);
         if (!reservation.getUser().getUserName().equals(userName)) {
-            throw new AccessDeniedException("You are not allowed to delete this reservation");
+            throw new AccessDeniedException("Nie jesteś uprawniony do usunięcia tej rezerwacji");
         }
         reservationsDAO.deleteReservation(reservationNumber);
         log.info("Rezerwacja usunięta: {}", reservationNumber);
@@ -78,7 +78,7 @@ public class ReservationsService {
     public Reservations findReservationByReservationNumber(String reservationNumber) {
         Optional<Reservations> reservations = reservationsDAO.findReservationByReservationNumber(reservationNumber);
         if (reservations.isEmpty()) {
-            throw new NotFoundException("Reservation not found");
+            throw new NotFoundException("Rezerwacja nie znaleziona");
         }
         log.info("Znaleziono rezerwację: {}", reservationNumber);
         return reservations.get();
