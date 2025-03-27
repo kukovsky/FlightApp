@@ -6,8 +6,8 @@ server:
       timeout: 15m
 amadeus:
   api:
-    key: EP4hJKUuuui7lU4HcP2om1e1I98h2ACB
-    secret: A7mdRWTdegNiDI98
+    key:
+    secret:
     environment: test
 
 spring:
