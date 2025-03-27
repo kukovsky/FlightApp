@@ -6,17 +6,17 @@ server:
       timeout: 15m
 amadeus:
   api:
-    key:
-    secret:
+    key: EP4hJKUuuui7lU4HcP2om1e1I98h2ACB
+    secret: A7mdRWTdegNiDI98
     environment: test
 
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/flightapp
-    username: postgres
-    password: postgres
+    url:
+    username:
+    password:
     hikari:
       idle-timeout: 10000
       connectionTimeout: 20000
