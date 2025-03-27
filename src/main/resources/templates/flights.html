@@ -6,8 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/flightapp/css/suggestions-list.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/scripts.js}"></script>
 
 </head>
@@ -34,8 +33,21 @@
         </div>
     </div>
 </nav>
+
+
 <div class="container mt-5">
-    <h3 class="mb-4">Wyszukaj lotów</h3>
+    <div id="alertContainerSuccess" class="alert alert-success d-none text-start mx-auto mt-3" role="alert">
+        <p id="alertMessageSuccess"></p>
+        <button type="button" class="btn-close position-absolute top-0 end-0"
+                aria-label="Close" onclick="closeAlert('success')"></button>
+    </div>
+
+    <div id="alertContainerDanger" class="alert alert-danger d-none text-start mx-auto mt-3" role="alert">
+        <p id="alertMessageDanger"></p>
+        <button type="button" class="btn-close position-absolute top-0 end-0"
+                aria-label="Close" onclick="closeAlert('danger')"></button>
+    </div>
+    <h3 class="mb-4">Wyszukaj lot</h3>
 
     <form id="flightSearchForm" class="form-horizontal">
         <div class="mb-3">
@@ -76,8 +88,8 @@
         <button type="submit" class="btn btn-primary">Szukaj rezerwacji</button>
     </form>
 
-    <div class="mt-4" id="flightsResults">
-    </div>
+    <div class="mt-4" id="flightsResults"></div>
+
 </div>
 
 </body>

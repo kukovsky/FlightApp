@@ -48,7 +48,7 @@ public class ExperienceService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Experience exisitingExperience = findExperienceByUUID(experienceUUID);
         if (!exisitingExperience.getUser().getUserName().equals(userName)) {
-            throw new AccessDeniedException("Nie masz uprawnień do edycji tego doświadczenia");
+            throw new AccessDeniedException("Nie masz uprawnień do edycji tego wyzwania");
         }
         Experience updatedExperience = exisitingExperience.withDone(!exisitingExperience.getDone());
         experienceDAO.saveExperience(updatedExperience);
@@ -59,7 +59,7 @@ public class ExperienceService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Experience exisitingExperience = findExperienceByUUID(experienceUUID);
         if (!exisitingExperience.getUser().getUserName().equals(userName)) {
-            throw new AccessDeniedException("Nie masz uprawnień do usunięcia tego doświadczenia");
+            throw new AccessDeniedException("Nie masz uprawnień do usunięcia tego wyzwania");
         }
         experienceDAO.deleteExperience(exisitingExperience);
 
@@ -69,11 +69,11 @@ public class ExperienceService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Experience experience = findExperienceByUUID(experienceDTO.getExperienceUUID());
         if (!experience.getUser().getUserName().equals(userName)) {
-            throw new AccessDeniedException("Nie masz uprawnień do edycji tego doświadczenia");
+            throw new AccessDeniedException("Nie masz uprawnień do edycji tego wyzwania");
         }
         Experience updatedExperience = experience.withExperienceComment(experienceDTO.getExperienceComment());
         experienceDAO.saveExperience(updatedExperience);
-        log.info("Zaktualizowano doświadczenie o identyfikatorze: {}", experience.getExperienceUUID());
+        log.info("Zaktualizowano wyzwanie o identyfikatorze: {}", experience.getExperienceUUID());
 
     }
 
@@ -81,9 +81,9 @@ public class ExperienceService {
     public Experience findExperienceByUUID(String experienceUUID) {
         Optional<Experience> experience = experienceDAO.findByExperienceUUID(experienceUUID);
         if (experience.isEmpty()) {
-            throw new NotFoundException("Nie znaleziono doświadczenia o podanym identyfikatorze");
+            throw new NotFoundException("Nie znaleziono wyzwania o podanym identyfikatorze");
         }
-        log.info("Znaleziono doświadczenie o identyfikatorze: {}", experience.get().getExperienceUUID());
+        log.info("Znaleziono wyzwanie o identyfikatorze: {}", experience.get().getExperienceUUID());
         return experience.get();
     }
 

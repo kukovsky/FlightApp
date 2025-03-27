@@ -18,6 +18,6 @@ public class UserDTO {
     String lastName;
     @Email
     String email;
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 6, message = "Hasło musi mieć co najmniej 6 znaków")
     String password;
 }

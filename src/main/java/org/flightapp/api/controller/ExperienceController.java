@@ -47,10 +47,10 @@ public class ExperienceController {
         return "experience-edit";
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public String updateExperience(@ModelAttribute("experienceDTO") ExperienceDTO experienceDTO, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         experienceService.updateExperience(experienceDTO);
-        redirectAttributes.addFlashAttribute("statusMessage", "Doświadczenie zaktualizowane");
+        redirectAttributes.addFlashAttribute("statusMessage", "Wyzwanie zaktualizowane");
         return "redirect:/experiences";
     }
 
@@ -62,10 +62,10 @@ public class ExperienceController {
         return "redirect:/experiences?success";
     }
 
-    @PutMapping("/edit-status/{experienceUUID}")
+    @PatchMapping("/edit-status/{experienceUUID}")
     public String experienceEditStatus(@PathVariable String experienceUUID, Model model, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         experienceService.changeExperienceStatus(experienceUUID);
-        redirectAttributes.addFlashAttribute("statusMessage", "Status doświadczenia został zmieniony");
+        redirectAttributes.addFlashAttribute("statusMessage", "Status wyzwania został zmieniony");
         model.addAttribute("experienceUUID", experienceUUID);
         return "redirect:/experiences";
     }
@@ -73,7 +73,7 @@ public class ExperienceController {
     @DeleteMapping("/delete/{experienceUUID}")
     public String experienceDelete(@PathVariable String experienceUUID, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         experienceService.deleteExperience(experienceUUID);
-        redirectAttributes.addFlashAttribute("deleteMessage", "Doświadczenie zostało usunięte");
+        redirectAttributes.addFlashAttribute("deleteMessage", "Wyzwanie zostało usunięte");
         return "redirect:/experiences";
     }
 }

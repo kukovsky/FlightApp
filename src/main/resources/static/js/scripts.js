@@ -45,16 +45,16 @@ async function searchLocations(keyword, type) {
         const response = await fetch(`/flightapp/api/locations?keyword=${keyword}`);
         if (!response.ok) {
             console.error('Błąd odpowiedzi API:', response.status);
-            alert('Błąd podczas ładowania lokalizacji.');
+            showAlert("Błąd podczas ładowania lokalizacji", "danger");
             return;
         }
 
         const locations = await response.json();
-        console.log('Odpowiedź z API:', locations); // Logujemy odpowiedź
+        console.log('Odpowiedź z API:', locations);
         populateSuggestions(locations, type);
     } catch (error) {
         console.error('Błąd podczas pobierania lokalizacji:', error);
-        alert('Błąd podczas ładowania lokalizacji.');
+        showAlert("Błąd podczas ładowania lokalizacji.", "danger");
     }
 }
 
@@ -121,7 +121,7 @@ async function searchFlights() {
             const flightOffers = await response.json();
             displayFlights(flightOffers);
         } else {
-            alert('Błąd podczas wyszukiwania lotów.');
+            showAlert("Błąd podczas wyszukiwania lotów.", "danger");
         }
     } catch (error) {
         console.error('Błąd podczas wyszukiwania lotów:', error);
@@ -226,7 +226,7 @@ var userName = '${user.userName}';
 function reserveFlight(offer) {
     console.log('Obiekt offer:', offer); // Sprawdzamy dane lotu
     if (!userName) {
-        alert('Zaloguj się, by zarezerwować lot.');
+        showAlert("Zaloguj się, by zarezerwować lot.", "danger");
         return;
     }
 
@@ -285,11 +285,44 @@ function reserveFlight(offer) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Odpowiedź z backendu:', data); // Sprawdzamy odpowiedź z backendu
-            alert(data.message);
+            console.log('Odpowiedź z backendu:', data);
+            showAlert(data.message, "success");
         })
         .catch(error => {
             console.error('Błąd podczas rezerwacji lotu:', error);
-            alert(error.message);
+            showAlert(error.message, "danger");
         });
+}
+
+function showAlert(message, type) {
+    let alertContainer;
+    let alertMessageElement;
+
+    if (type === 'success') {
+        alertContainer = document.getElementById('alertContainerSuccess');
+        alertMessageElement = document.getElementById('alertMessageSuccess');
+    } else if (type === 'danger') {
+        alertContainer = document.getElementById('alertContainerDanger');
+        alertMessageElement = document.getElementById('alertMessageDanger');
+
+    }
+    console.log({alertContainer, alertMessageElement, message, type});
+    if (alertContainer && alertMessageElement) {
+        alertMessageElement.textContent = message;
+        alertContainer.classList.remove('d-none');
+    }
+}
+
+function closeAlert(type) {
+    let alertContainer;
+
+    if (type === 'success') {
+        alertContainer = document.getElementById('alertContainerSuccess');
+    } else if (type === 'danger') {
+        alertContainer = document.getElementById('alertContainerDanger');
+
+    }
+    if (alertContainer) {
+        alertContainer.classList.add('d-none');
+    }
 }

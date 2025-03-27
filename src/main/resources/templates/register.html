@@ -5,11 +5,13 @@
     <title>FlightApp - Login and Registration Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">FlightApp - Logowanie i Rejestracja</a>
+        <a class="navbar-brand" th:href="@{/index}">Logowanie i Rejestracja</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -33,63 +35,64 @@
             <div th:if="${param.success}">
                 <div class="alert alert-success">
                     <p>Użytkownik zarejestrowany pomyślnie!</p>
+                    <button type="button" class="btn-close position-absolute end-0" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
             <div class="card-body">
                 <form method="post" role="form" th:action="@{/register/save}" th:object="${user}">
                     <div class="form-group mb-3">
                         <label class="form-label">Nazwa użytkownika</label>
-                        <input type="text"
-                               class="form-control"
-                               id="userName"
-                               name="userName"
-                               th:field="*{userName}"
-                               placeholder="Podaj nazwę użytkownika"
-                               required="required"/>
+                        <label for="userName"></label><input type="text"
+                                                             class="form-control"
+                                                             id="userName"
+                                                             name="userName"
+                                                             th:field="*{userName}"
+                                                             placeholder="Podaj nazwę użytkownika"
+                                                             required="required"/>
                         <p th:errors="*{userName}" class="text-danger" th:if="${#fields.hasErrors('userName')}">Nazwa użytkownika jest zajęta</p>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Imię</label>
-                        <input type="text"
-                               class="form-control"
-                               id="firstName"
-                               name="firstName"
-                               th:field="*{firstName}"
-                               placeholder="Podaj imię"
-                               required="required"/>
+                        <label for="firstName"></label><input type="text"
+                                                              class="form-control"
+                                                              id="firstName"
+                                                              name="firstName"
+                                                              th:field="*{firstName}"
+                                                              placeholder="Podaj imię"
+                                                              required="required"/>
                         <p th:errors="*{firstName}" class="text-danger" th:if="${#fields.hasErrors('firstName')}"></p>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Nazwisko</label>
-                        <input type="text"
-                               class="form-control"
-                               id="lastName"
-                               name="lastName"
-                               th:field="*{lastName}"
-                               placeholder="Podaj nazwisko"
-                               required="required"/>
+                        <label for="lastName"></label><input type="text"
+                                                             class="form-control"
+                                                             id="lastName"
+                                                             name="lastName"
+                                                             th:field="*{lastName}"
+                                                             placeholder="Podaj nazwisko"
+                                                             required="required"/>
                         <p th:errors="*{lastName}" class="text-danger" th:if="${#fields.hasErrors('lastName')}"></p>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email"
-                               class="form-control"
-                               id="email"
-                               name="email"
-                               th:field="*{email}"
-                               placeholder="Podaj email"
-                               required="required"/>
+                        <label for="email"></label><input type="email"
+                                                          class="form-control"
+                                                          id="email"
+                                                          name="email"
+                                                          th:field="*{email}"
+                                                          placeholder="Podaj email"
+                                                          required="required"/>
                         <p th:errors="*{email}" class="text-danger" th:if="${#fields.hasErrors('email')}">Adres e-mail jest już zajęty</p>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password"
-                               class="form-control"
-                               id="password"
-                               name="password"
-                               th:field="*{password}"
-                               placeholder="Podaj hasło"
-                               required="required"/>
+                        <label class="form-label">Hasło</label>
+                        <label for="password"></label><input type="password"
+                                                             class="form-control"
+                                                             id="password"
+                                                             name="password"
+                                                             th:field="*{password}"
+                                                             placeholder="Podaj hasło"
+                                                             required="required"/>
                         <p th:errors="*{password}" class="text-danger" th:if="${#fields.hasErrors('password')}"></p>
                     </div>
                     <div class="form-group">

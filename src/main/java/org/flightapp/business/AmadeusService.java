@@ -29,7 +29,13 @@ public class AmadeusService {
     }
 
     // Pobieranie dostępnych lotów
-    public List<ReservationsDTO> getFlights(String origin, String destination, String departureDate, String returnDate, String adults, Boolean nonStop) throws ResponseException {
+    public List<ReservationsDTO> getFlights(
+            String origin,
+            String destination,
+            String departureDate,
+            String returnDate,
+            String adults,
+            Boolean nonStop) throws ResponseException {
         Params params = Params.with("originLocationCode", origin)
                 .and("destinationLocationCode", destination)
                 .and("departureDate", departureDate)

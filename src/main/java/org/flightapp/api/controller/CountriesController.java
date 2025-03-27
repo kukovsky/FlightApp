@@ -58,7 +58,7 @@ public class CountriesController {
         return "redirect:/countries?success";
     }
 
-    @PutMapping("/edit/{countryUUID}")
+    @PatchMapping("/edit/{countryUUID}")
     public String editCountry(@PathVariable String countryUUID, RedirectAttributes redirectAttributes) throws AccessDeniedException {
         countriesService.changeCountryStatus(countryUUID);
         redirectAttributes.addFlashAttribute("statusMessage", "Status zmieniony pomyślnie");
